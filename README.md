@@ -210,6 +210,24 @@ The system extracts the task ID and synchronizes the corresponding ClickUp task 
 
 ---
 
+# Project Structure
+
+```text
+apps/
+├── webhook-server/   # receives and normalizes GitLab webhook events
+├── worker/           # processes workflow events and updates ClickUp
+
+shared/
+├── types/
+├── constants/
+└── utils/
+
+infrastructure/
+└── rabbitmq/
+```
+
+---
+
 # Tech Stack
 
 - Node.js
