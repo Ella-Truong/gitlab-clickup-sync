@@ -51,6 +51,13 @@ GitLab webhook triggered
 System extracts ClickUp task ID
         ↓
 ClickUp status updated to "Review"
+
+**OR**
+GitHub/GitLab
+    ↓ (webhook event)
+Your automation service
+    ↓ (API call)
+ClickUp
 ```
 
 ---
