@@ -44,7 +44,7 @@ remain the responsibility of project managers and engineering leads.
 ### Example Workflow
 
 ```txt
-Developer opens Merge Request
+Developer opens Merge Request                                  
         ↓
 GitLab webhook triggered
         ↓
@@ -52,12 +52,13 @@ System extracts ClickUp task ID
         ↓
 ClickUp status updated to "Review"
 
-**OR**
+
 GitHub/GitLab
     ↓ (webhook event)
 Your automation service
     ↓ (API call)
 ClickUp
+
 ```
 
 ---
