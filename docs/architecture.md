@@ -2,15 +2,17 @@
 
 ## Overview
 
-GitLab → ClickUp Workflow Sync is an event-driven backend system that automates workflow synchronization between GitLab development activity and ClickUp task workflows.
+GitLab → ClickUp Workflow Sync is a lightweight event-driven backend project that automates task workflow updates based on GitLab development activity.
 
-The system receives GitLab webhook events, processes them asynchronously through RabbitMQ, evaluates workflow rules, and updates ClickUp task statuses automatically.
+The system receives GitLab webhook events, sends them through RabbitMQ for asynchronous processing, and updates ClickUp task statuses automatically.
 
-The architecture focuses on:
+The project is intentionally small and focused on learning:
+- RabbitMQ
+- Docker
 - asynchronous processing
-- lightweight webhook ingestion
-- service decoupling
-- distributed workflow automation
+- webhook systems
+- multi-service communication
+- deployment on Render
 
 ---
 
@@ -21,17 +23,11 @@ GitLab
    ↓ Webhook Events
 Webhook Server
    ↓
-Event Normalization
+RabbitMQ
    ↓
-RabbitMQ Queue
-   ↓
-Background Worker
-   ↓
-Workflow Rule Engine
+Worker Service
    ↓
 ClickUp API
-   ↓
-Task Status Synchronization
 ```
 
 ---
@@ -41,51 +37,36 @@ Task Status Synchronization
 ```text
 project-root/
 │
-├── apps/
-│   ├── webhook-server/
-│   │   ├── src/
-│   │   │   ├── routes/
-│   │   │   ├── controllers/
-│   │   │   ├── services/
-│   │   │   ├── middleware/
-│   │   │   ├── utils/
-│   │   │   ├── app.ts
-│   │   │   └── server.ts
-│   │   │
-│   │   ├── Dockerfile
-│   │   ├── package.json
-│   │   └── tsconfig.json
+├── webhook-server/
+│   ├── src/
+│   │   ├── routes/
+│   │   ├── controllers/
+│   │   ├── services/
+│   │   ├── types/
+│   │   ├── app.ts
+│   │   └── server.ts
 │   │
-│   └── worker/
-│       ├── src/
-│       │   ├── consumers/
-│       │   ├── services/
-│       │   ├── rules/
-│       │   ├── utils/
-│       │   ├── app.ts
-│       │   └── worker.ts
-│       │
-│       ├── Dockerfile
-│       ├── package.json
-│       └── tsconfig.json
+│   ├── Dockerfile
+│   ├── package.json
+│   └── tsconfig.json
+│
+├── worker/
+│   ├── src/
+│   │   ├── consumers/
+│   │   ├── services/
+│   │   ├── worker.ts
+│   │   └── app.ts
+│   │
+│   ├── Dockerfile
+│   ├── package.json
+│   └── tsconfig.json
 │
 ├── shared/
-│   ├── types/
-│   ├── constants/
-│   └── utils/
-│
-├── infrastructure/
-│   └── rabbitmq/
-│
-├── docs/
-│   ├── architecture.md
-│   ├── rabbitmq-notes.md
-│   └── deployment.md
+│   └── types/
 │
 ├── docker-compose.yml
 ├── .env
 ├── .gitignore
-├── package.json
 └── README.md
 ```
 
@@ -96,11 +77,10 @@ project-root/
 ## Webhook Server
 
 The webhook server is responsible for:
-- receiving GitLab webhook payloads
+- receiving GitLab webhook events
 - validating incoming requests
 - extracting task identifiers
-- normalizing external payloads
-- publishing workflow events to RabbitMQ
+- publishing events to RabbitMQ
 
 Example endpoint:
 
@@ -108,144 +88,122 @@ Example endpoint:
 POST /webhook/gitlab
 ```
 
-The webhook layer intentionally avoids heavy business logic to keep request handling lightweight and responsive.
+The webhook server stays lightweight and avoids heavy business logic.
 
----
-
-# Event Normalization
-
-GitLab webhook payloads contain large and complex structures.
-
-The system transforms external payloads into simplified internal workflow events.
-
-## Example
-
-### Raw GitLab Payload
-
-```json
-{
-  "object_kind": "push",
-  "ref": "refs/heads/feature/CU-123-auth",
-  "commits": []
-}
-```
-
-### Internal Workflow Event
-
-```json
-{
-  "taskId": "CU-123",
-  "eventType": "PUSH",
-  "commitIncrement": 2
-}
-```
-
-This reduces coupling between downstream services and GitLab-specific schemas.
+Its main responsibility is forwarding events to RabbitMQ quickly.
 
 ---
 
 # RabbitMQ
 
-RabbitMQ acts as the asynchronous communication layer between webhook ingestion and workflow processing.
+RabbitMQ acts as the communication layer between services.
 
 Responsibilities:
-- event buffering
-- asynchronous processing
-- workload distribution
-- retry support
+- asynchronous event processing
+- message buffering
 - service decoupling
+- background job handling
 
-Webhook handlers only queue events and return responses quickly.
+Instead of processing everything immediately inside the webhook request, events are pushed into a queue and handled later by workers.
 
-Workflow processing happens independently in background workers.
+This improves:
+- responsiveness
+- reliability
+- scalability
 
 ---
 
 # Worker Service
 
-Workers consume normalized workflow events from RabbitMQ.
+The worker service consumes events from RabbitMQ.
 
 Responsibilities:
-- process workflow events
-- evaluate workflow rules
-- synchronize ClickUp tasks
-- prevent duplicate transitions
+- process incoming events
+- evaluate workflow logic
+- update ClickUp tasks
 - handle background processing
 
-Workers are isolated from webhook ingestion to improve scalability and fault tolerance.
+The worker runs independently from the webhook server.
+
+This separation makes the system easier to scale and maintain.
 
 ---
 
-# Workflow Rule Engine
-
-The workflow engine maps GitLab development activity to ClickUp task states.
-
-## Example Rules
-
-| GitLab Activity | ClickUp Status |
-|---|---|
-| Merge Request opened | Review |
-| ≥ 3 implementation commits | In Progress |
-| Merge Request merged | Done |
-| No implementation activity | Backlog |
-
-The rules are intentionally lightweight and predictable.
-
-Project management decisions remain outside automation scope.
-
----
-
-# Event Flow
+# Example Event Flow
 
 ```text
 Developer pushes commits
         ↓
 GitLab webhook triggered
         ↓
-Webhook server receives payload
-        ↓
-Payload normalized into internal event
+Webhook server receives event
         ↓
 Event published to RabbitMQ
         ↓
 Worker consumes event
-        ↓
-Workflow rules evaluated
         ↓
 ClickUp task updated
 ```
 
 ---
 
-# Deployment Architecture
+# Example Workflow Rules
 
-The system is containerized using Docker.
+| GitLab Activity | ClickUp Status |
+|---|---|
+| Merge Request opened | Review |
+| Merge Request merged | Done |
+| Multiple commits pushed | In Progress |
 
-## Deployment Flow
+The workflow rules are intentionally simple and predictable.
+
+---
+
+# Docker Architecture
+
+Each service runs inside its own Docker container.
+
+Services:
+- webhook-server
+- worker
+- rabbitmq
+
+Docker Compose is used for local development and service orchestration.
+
+Example:
+
+```text
+Docker Compose
+    ├── webhook-server
+    ├── worker
+    └── rabbitmq
+```
+
+This setup helps simulate a real distributed backend environment locally.
+
+---
+
+# Deployment
+
+The system is deployed on Render using Docker containers.
+
+Deployment flow:
 
 ```text
 Dockerize Services
         ↓
 Deploy to Render
         ↓
-Receive Public Backend URL
-        ↓
 Configure GitLab Webhook
         ↓
-Receive GitLab Events Automatically
+Receive Events Automatically
 ```
 
----
-
-# Public Webhook Endpoint
-
-Example:
+Example public webhook endpoint:
 
 ```text
 https://your-service.onrender.com/webhook/gitlab
 ```
-
-GitLab sends webhook events to this endpoint whenever development activity occurs.
 
 ---
 
@@ -255,10 +213,10 @@ GitLab sends webhook events to this endpoint whenever development activity occur
 
 Webhook endpoints should respond quickly.
 
-Heavy synchronization logic is delegated to background workers.
+Heavy processing is delegated to background workers through RabbitMQ.
 
 Benefits:
-- lower webhook latency
+- faster response times
 - improved reliability
 - better fault isolation
 
@@ -268,39 +226,42 @@ Benefits:
 
 RabbitMQ separates:
 - event ingestion
-- workflow processing
+- background processing
 
-This improves scalability and isolates failures between services.
+This allows services to operate independently.
 
 ---
 
-## Internal Event Model
+## Simple Service Separation
 
-Normalized internal events reduce direct dependency on GitLab payload structures and simplify worker logic.
+The project uses only two backend services:
+- webhook-server
+- worker
+
+The architecture remains intentionally small to keep the system easy to understand and deploy.
 
 ---
 
 # Future Improvements
 
-Potential future extensions:
+Possible future extensions:
 - retry queues
 - dead-letter queues
-- GitHub support
+- GitHub integration
 - Slack notifications
-- audit logging
-- worker metrics
-- observability dashboards
-- configurable workflow rules
+- logging and monitoring
+- additional workflow rules
 
 ---
 
 # Summary
 
-GitLab → ClickUp Workflow Sync is an event-driven integration platform designed to automate lightweight workflow coordination between development and project management systems.
+GitLab → ClickUp Workflow Sync is a lightweight event-driven backend project built to explore:
+- RabbitMQ
+- Docker
+- asynchronous systems
+- webhook architecture
+- distributed service communication
+- cloud deployment
 
-The architecture emphasizes:
-- asynchronous processing
-- service decoupling
-- lightweight automation
-- distributed backend communication
-- scalable workflow synchronization
+The project focuses on simplicity, practical backend concepts, and real-world event-driven workflows.
