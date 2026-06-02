@@ -1,4 +1,5 @@
-//start the consumer (input for worker)
+/*start the consumer (input for worker)*/
+
 import { connectRabbitMQ } from "../services/rabbitmq";
 
 const QUEUE_NAME = "gitlab-events";

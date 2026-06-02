@@ -1,9 +1,11 @@
+//define how TypeScript is compiled in the project
+
 {
   "compilerOptions": {
     //control folder structure
-    /*
-    It means: src/server.ts ==> dist/server.js
-    */
+    
+    //It means: src/server.ts ==> dist/server.js
+    
     "rootDir": "./src",   //TypeScript source
     "outDir": "./dist",   //compiled JavaScript
      
