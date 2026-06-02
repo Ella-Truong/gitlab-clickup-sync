@@ -148,14 +148,15 @@ ClickUp task updated
 ---
 
 # Example Workflow Rules
+## GitLab → ClickUp Workflow
 
-| GitLab Activity | ClickUp Status |
-|---|---|
-| Merge Request opened | Review |
-| Merge Request merged | Done |
-| Multiple commits pushed | In Progress |
-
-The workflow rules are intentionally simple and predictable.
+| GitLab Event | Condition | ClickUp Action | ClickUp Status |
+|--------------|-----------|---------------|---------------|
+| Issue Assigned | User is assigned to an issue | Create ClickUp task | To Do |
+| Push Event | First commit detected | Update existing task | Review |
+| Push Event | Total commits reach 3 | Update existing task | In Progress |
+| Merge Request Opened | MR created | Update existing task | Testing |
+| Merge Request Merged | MR merged successfully | Update existing task | Done |
 
 ---
 
