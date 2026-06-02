@@ -23,7 +23,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
 
-    "types": ["node"]
+    "types": ["node"],
   },
   
   //combine everything under src/
