@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    //generate JavaScript compatible with ES2020
+    "target": "ES2020",
+
+    //control how import/export are compiled
+    "module": "CommonJS",
+
+    //tell TypeScript how to find imported files
+    "moduleResolution": "Node",
+
+    //root directory is src
+    "rootDir": "./src",
+    //specify where compiled JS goes -> worker.js
+    "outDir": "./dist",
+
+    "strict": true,
+    "esModuleInterop": true,
+    //let TypeScript import JSON files
+    "resolveJsonModule": true,
+    
+    //skip checking type definitions inside node_modules
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+
+    "types": ["node"]
+  },
+  
+  //combine everything under src/
+  "include": ["src/**/*"],
+  //ignore node_modules/ and dist/, TypeScript don't need to compile these
+  "exclude": ["node_modules", "dist"]
+}
