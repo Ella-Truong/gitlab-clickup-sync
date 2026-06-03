@@ -2,11 +2,16 @@
  * Define application events published to RabbitMQ
  */
 
+export type GitLabEventType = "issue-assigned" | "push" | "merge-request";
+
 export interface GitLabEvent {
     source: "gitlab";
-    eventType: string;
+    eventType: GitLabEventType;
+    projectId?: number;
     projectName?: string;
-    title?: string;
-    description?: string;
     author?: string;
+    title?: string;
+    issueId?: number;
+    description?: string;
+    commitCount?: number;
 }

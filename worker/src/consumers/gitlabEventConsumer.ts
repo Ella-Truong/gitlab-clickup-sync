@@ -1,4 +1,6 @@
-/*start the consumer (input for worker)*/
+/**
+ * Consumes GitLab events from RabbitMQ
+ */
 
 import { connectRabbitMQ } from "../services/rabbitmq";
 
