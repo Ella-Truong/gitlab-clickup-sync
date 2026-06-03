@@ -2,11 +2,28 @@
 
 ## What is RabbitMQ?
 
+### Its role in this project
+
 RabbitMQ is a tool that helps different services communicate with each other asynchronously.
 
 Simple idea:
 
-Instead of one service doing everything immediately, it can send a message to RabbitMQ and let another service handle the work later.
+Instead of one service doing everything immediately, it can send a message to RabbitMQ and let another service handle the work later
+
+### Understanding Buffer and RabbitMQ
+
+* RabbitMQ is a language-agnostic, cannot understanding a Node.js object like: 
+
+```bash
+{
+  eventType: "merge-request"
+}
+```
+* RabbitMQ transmits messages as raw binary data (bytes), not JavaScript objects. Since this project runs in a Node.js environment, messages are converted into `Buffer` objects before being sent to RabbitMQ.
+* `Buffer` is a built-in Node.js object that represents raw binary data (bytes) in memory.
+* When publishing a message, a JavaScript object is typically converted using `JSON.stringify()` and then wrapped with `Buffer.from()` before being sent to RabbitMQ.
+* When consuming a message, the received `Buffer` is converted back to a string using `toString()`, and then parsed into a JavaScript object using `JSON.parse()`.
+
 
 ---
 
