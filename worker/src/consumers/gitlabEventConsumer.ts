@@ -6,6 +6,7 @@
 
 import { connectRabbitMQ } from "../services/rabbitmq";
 
+
 const QUEUE_NAME = "gitlab-events";
 
 export async function startConsumer(){
