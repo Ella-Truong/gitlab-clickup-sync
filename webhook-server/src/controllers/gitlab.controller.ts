@@ -3,7 +3,7 @@
  */
 import { Request, Response } from "express";
 import { processWebhook } from "../services/gitlab.service";
-import { GitLabPayload } from "../types/gitlab.types";
+import { GitLabPayload } from "../../../shared/src/types/gitlab.types";
 
 export const handleGitLabWebhook = async (
     req: Request,
