@@ -5,8 +5,8 @@
  */
 
 import { publishMessage } from "./rabbitmq.service";
-import { GitLabPayload } from "../types/gitlab.types";
-import { GitLabEvent, GitLabEventType } from "../types/event.types";
+import { GitLabPayload } from "../../../shared/src/types/gitlab.types";
+import { GitLabEvent, GitLabEventType } from "../../../shared/src/types/event.types";
 
 //validate payload
 const validatePayload = (

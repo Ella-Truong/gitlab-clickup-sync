@@ -1,3 +1,8 @@
+/**
+ * Connect to RabbitMQ
+ * Initiliaze a shared channel to send messages to the queue
+ * Make sure channel exist before publishing messages
+ */
 import amqp from "amqplib";
 
 const QUEUE_NAME = "gitlab-events";

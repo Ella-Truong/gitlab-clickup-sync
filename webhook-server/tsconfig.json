@@ -1,36 +1,14 @@
 //define how TypeScript is compiled in the project
 
 {
+  "extends": "../tsconfig.base.json",
+
   "compilerOptions": {
-    //control folder structure
-    
-    //It means: src/server.ts ==> dist/server.js
-    
-    "rootDir": "./src",   //TypeScript source
     "outDir": "./dist",   //compiled JavaScript
-     
-
-    //define module system, controls import/exports
-    /*
-    CommonJs: const express = require("express")
-    ES modules: import express from "express"
-    */
-    "module": "commonjs",
-
-    //compile TS into ES2020 JavaScript
-    "target": "ES2020",
-
-    "types": ["node"],
 
     "sourceMap": true,
-    
+  },
 
-    //This catches bugs early. EX: let age: number = "hello" ==> TypeScript error immediately
-    "strict": true,
-
-    //This makes imports easier
-    "esModuleInterop": true,
-
-    "skipLibCheck": true
-  }
+  "include": ["src/**/*", "../shared/src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
