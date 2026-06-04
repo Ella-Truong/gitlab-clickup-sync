@@ -10,13 +10,13 @@ Built to reduce manual task updates, minimize context switching, and improve eng
 
 Engineering teams often work across multiple platforms:
 
-- GitLab
+- GitLab/GitHub
 - ClickUp
 - code reviews
 - implementation branches
 - merge requests
 
-A common workflow issue is that developers forget to manually update task statuses after development activity such as:
+A common workflow issue is that developers forget to manually update the task's status after doing activities such as:
 
 - opening Merge Requests
 - pushing implementation commits
@@ -90,7 +90,7 @@ Raw GitLab payloads are transformed into simplified internal workflow events.
 {
   "taskId": "CU-123",
   "eventType": "PUSH",
-  "commitIncrement": 2
+  "commitCount": 2
 }
 ```
 
@@ -132,12 +132,15 @@ Responsibilities:
 
 # Workflow Rules
 
-| GitLab Activity | ClickUp Status |
-|---|---|
-| Merge Request opened | Review |
-| ≥ 3 implementation commits | In Progress |
-| Merge Request merged | Done |
-| No implementation activity | Backlog |
+
+| GitLab Event | Condition | ClickUp Action | ClickUp Status |
+|--------------|-----------|---------------|---------------|
+| Issue Assigned | User is assigned to an issue | Create ClickUp task | To Do |
+| Push Event | First commit detected | Update existing task | Review |
+| Push Event | Total commits reach 3 | Update existing task | In Progress |
+| Merge Request Opened | MR created | Update existing task | Testing |
+| Merge Request Merged | MR merged successfully | Update existing task | Done |
+
 
 The workflow rules are intentionally simple and predictable.
 
@@ -147,7 +150,7 @@ Human decisions such as:
 - reassignment
 - blocked tasks
 
-remain under project management control.
+Remain under project management control.
 
 ---
 
@@ -158,7 +161,7 @@ The system avoids updating workflow status on every commit.
 ### Example
 
 ```text
-Commit #1 → ignore
+Commit #1 → review
 Commit #2 → ignore
 Commit #3 → move task to "In Progress"
 ```
@@ -193,7 +196,7 @@ ClickUp task updated
 
 # Task Linking Convention
 
-GitLab branches and Merge Requests are linked to ClickUp tasks using shared task identifiers.
+GitLab branches and Merge Requests are linked to ClickUp tasks using shared task identifiers
 
 ### ClickUp Task
 
@@ -212,31 +215,23 @@ feature/CU-123-auth-flow
 ```text
 [CU-123] Implement authentication flow
 ```
+### Commits
+
+```text
+feat(CU-123): implement authentication flow
+fix(CU-123): handle invalid JWT tokens
+refactor(CU-123): simplify auth service
+test(CU-123): add login endpoint tests
+docs(CU-123): update authentication setup guide
+```
 
 The system extracts task identifiers automatically and synchronizes the corresponding ClickUp workflow state.
 
 ---
 
-# Project Structure
-
-```text
-apps/
-├── webhook-server/   # receives and normalizes GitLab webhook events
-├── worker/           # processes workflow events and updates ClickUp
-
-shared/
-├── types/
-├── constants/
-└── utils/
-
-infrastructure/
-└── rabbitmq/
-```
-
----
-
 # Tech Stack
 
+- TypeScript
 - Node.js
 - Express.js
 - RabbitMQ

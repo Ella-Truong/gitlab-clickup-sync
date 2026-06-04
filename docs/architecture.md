@@ -162,7 +162,7 @@ ClickUp task updated
 
 # Docker Architecture
 
-Each service runs inside its own Docker container.
+Each service runs inside its own Docker container and has its own Dockerfile
 
 Services:
 - webhook-server
@@ -257,7 +257,7 @@ Possible future extensions:
 
 # Summary
 
-GitLab → ClickUp Workflow Sync is a lightweight event-driven backend project built to explore:
+GitLab → ClickUp Workflow Sync is a lightweight, event-driven backend project built to explore:
 - RabbitMQ
 - Docker
 - asynchronous systems
