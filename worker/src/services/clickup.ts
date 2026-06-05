@@ -6,6 +6,10 @@
 
 import { GitLabEvent } from "../../../shared/src/types/event.types";
 
+const CLICKUP_API_URL = process.env.CLICKUP_API_URL;
+const CLICKUP_TOKEN = process.env.CLICKUP_TOKEN;
+const CLICKUP_LIST_ID = process.env.CLICKUP_LIST_ID;
+
 /**
  * Create a new ClickUp task when a GitLab issue is assigned
  */
@@ -15,8 +19,58 @@ export async function createClickUpTask(
     console.log(`[ClickUP] Creating task for issue: ${event.title}`);
 
     //TODO
-    //Call ClickUp API to create Task API
+    const res = await fetch(
+        `${CLICKUP_API_URL}/list/${CLICKUP_LIST_ID}/task`,
+        {
+            method: "POST",
+
+            headers: {
+                Authorization: CLICKUP_TOKEN!,
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                name: event.title,
+                description: event.description,
+                status: "To Do",
+            }),
+        }
+    );
+
+    if (!res.ok) {
+        throw new Error(`ClickUp API error: ${res.status}`);
+    }
+    
+    const task = await res.json();
+
+    console.log(`Created ClickUp task ${task.id}`)
 }
+
+/**
+ * Internal helper function for status updates
+ */
+async function updateTaskStatus(
+    taskId: string,
+    status: string,
+): Promise<void>{
+    const res = await fetch(
+        `${CLICKUP_API_URL}/task/${taskId}`,
+        {
+            method: "PUT",
+            headers: {
+                Authorization: CLICKUP_TOKEN!,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(
+                status
+            )
+        }
+    )
+    if(!res.ok) {
+        throw new Error(`ClickUp API error: , ${res.status}`);
+    }
+}
+
 
 /**
  * Move task to Review when first commit is pushed
@@ -43,6 +97,7 @@ export async function moveTaskToInProgress(
     //Find that ClickUp task
     //Update status to "In Progress"
 }
+
 
 /**
  * Move task from In Progress to testing when a MR is opened
