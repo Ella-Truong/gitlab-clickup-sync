@@ -3,6 +3,7 @@
  */
 
 export type GitLabEventType = "issue-assigned" | "push" | "merge-request";
+export type MergeRequestState = "opened" | "merged";
 
 export interface GitLabEvent {
     source: "gitlab";
@@ -14,4 +15,5 @@ export interface GitLabEvent {
     issueId?: number;
     description?: string;
     commitCount?: number;
+    mergeRequestState?: MergeRequestState;
 }

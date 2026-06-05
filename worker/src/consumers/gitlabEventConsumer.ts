@@ -2,6 +2,7 @@
  * Consumes GitLab events from RabbitMQ
  * For now, console.log(event) when a message arrives
  * This stage happens between RabbitMQ and ClickUp
+ * This function doesn't return anything, just waiting for the setup to complete
  */
 
 import { connectRabbitMQ } from "../services/rabbitmq";
@@ -18,7 +19,7 @@ export async function startConsumer(){
     const channel = await connection.createChannel();
     
     //make sure a queue with this name EXIST
-    //when RabbitMQ restart, the queue still exist
+    //durable: true means RabbitMQ will try to keep the queue after a broker restart
     await channel.assertQueue(QUEUE_NAME, {
         durable: true,
     });
@@ -27,7 +28,7 @@ export async function startConsumer(){
     
     //start consumer
     //whenever a new message arrives in QUEUE_NAME, call this function
-    channel.consume(QUEUE_NAME, (msg) => {
+    await channel.consume(QUEUE_NAME, (msg) => {
         //no message was received -> stop
         if (!msg) return;
 
@@ -37,12 +38,15 @@ export async function startConsumer(){
              * Cannot directly read that
              * Must convert it to text: msg.content.toString()
              * Convert JSON string into an object
-             */
+            */
+            
+            //extract data (msg.content) from the message -> payload
             const payload = JSON.parse(msg.content.toString());
             
             console.log("Received event: ");
             console.log(payload);
-
+            
+            //acknowledge the original message is successfully handled
             channel.ack(msg);
         }catch(error){
             console.error("Failed to process message", error)
