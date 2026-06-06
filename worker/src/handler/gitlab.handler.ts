@@ -50,12 +50,12 @@ async function handlePushEvent(
     }
 
     if(event.commitCount === 1){
-        await moveTaskToReview(event.taskId);
+        await moveTaskToReview(event.clickUpTaskId);
         return;
     }
 
     if(event.commitCount === 3){
-        await moveTaskToInProgress(event.taskId);
+        await moveTaskToInProgress(event.clickUpTaskId);
         return;
     }
 }
@@ -69,12 +69,12 @@ async function handleMergeRequestEvent(
     event: GitLabEvent
 ): Promise<void>{
     if(event.mergeRequestState === "opened"){
-        await moveTaskToTesting(event.taskId)
+        await moveTaskToTesting(event.clickUpTaskId)
         return;
     }
 
     if(event.mergeRequestState === "merged"){
-        await moveTaskToDone(event.taskId)
+        await moveTaskToDone(event.clickUpTaskId)
         return;
     }
 }
