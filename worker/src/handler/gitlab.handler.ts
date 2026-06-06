@@ -13,6 +13,7 @@ import {
     moveTaskToTesting,
 } from "../services/clickup";
 
+
 export async function handleGitLabEvent(event: GitLabEvent): Promise<void>{
     console.log(`Processing ${event.eventType} event from ${event.projectName}`);
 
@@ -44,15 +45,17 @@ export async function handleGitLabEvent(event: GitLabEvent): Promise<void>{
 async function handlePushEvent(
     event: GitLabEvent
 ): Promise<void>{
-    if(!event.commitCount) return;
+    if(!event.commitCount){
+        return;
+    }
 
     if(event.commitCount === 1){
-        await moveTaskToReview(event);
+        await moveTaskToReview(event.taskId);
         return;
     }
 
     if(event.commitCount === 3){
-        await moveTaskToInProgress(event);
+        await moveTaskToInProgress(event.taskId);
         return;
     }
 }
@@ -66,12 +69,12 @@ async function handleMergeRequestEvent(
     event: GitLabEvent
 ): Promise<void>{
     if(event.mergeRequestState === "opened"){
-        await moveTaskToTesting(event)
+        await moveTaskToTesting(event.taskId)
         return;
     }
 
     if(event.mergeRequestState === "merged"){
-        await moveTaskToDone(event)
+        await moveTaskToDone(event.taskId)
         return;
     }
 }

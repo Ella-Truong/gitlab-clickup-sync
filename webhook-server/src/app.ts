@@ -15,7 +15,7 @@ app.use(express.json());
 //check health
 app.use("/health", healthRoutes);
 
-//connect webhook routes to the appm like entry point of the app
+//connect webhook routes to the app like entry point of the app
 //any request starting with /webhook should use wehbookRoutes
 app.use("/webhook", webhookRoutes);
 

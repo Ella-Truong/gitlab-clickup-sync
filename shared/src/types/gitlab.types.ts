@@ -5,21 +5,21 @@
 export type GitLabObjectKind = "issue" | "push" | "merge-request"
 
 export interface GitLabPayload {
-    object_kind: GitLabObjectKind;
-    user_name?: string;
+    objectKind: GitLabObjectKind;
+    userName: string;
 
     project: {
         id: number;
         name: string;
-        web_url?: string;
+        webUrl?: string;
     }
 
     commits?: GitLabCommit[];
     assignees?: GitLabAssignee[];
 
-    object_attributes?: {
+    resource: {
         id: number;
-        title?: string;          // ex: Refactor Auth Flow
+        title: string;          // ex: Refactor Auth Flow
         description?: string;
         state?: string;    
         action?: string;
@@ -32,9 +32,12 @@ export interface GitLabCommit {
     message: string;
     timestamp: string;
     url: string;
+    authorName?: string;
+    authorEmail?: string;
 }
 
 export interface GitLabAssignee {
     id: number;
     name: string;
+    username?: string;
 }

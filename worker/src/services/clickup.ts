@@ -16,9 +16,6 @@ const CLICKUP_LIST_ID = process.env.CLICKUP_LIST_ID;
 export async function createClickUpTask(
     event: GitLabEvent
 ): Promise<void>{
-    console.log(`[ClickUP] Creating task for issue: ${event.title}`);
-
-    //TODO
     const res = await fetch(
         `${CLICKUP_API_URL}/list/${CLICKUP_LIST_ID}/task`,
         {
@@ -26,7 +23,7 @@ export async function createClickUpTask(
 
             headers: {
                 Authorization: CLICKUP_TOKEN!,
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
 
             body: JSON.stringify({
@@ -46,11 +43,12 @@ export async function createClickUpTask(
     console.log(`Created ClickUp task ${task.id}`)
 }
 
+
 /**
  * Internal helper function for status updates
  */
 async function updateTaskStatus(
-    taskId: string,
+    taskId: number,
     status: string,
 ): Promise<void>{
     const res = await fetch(
@@ -76,26 +74,18 @@ async function updateTaskStatus(
  * Move task to Review when first commit is pushed
  */
 export async function moveTaskToReview(
-    event: GitLabEvent
+    taskId: number,
 ): Promise<void>{
-    console.log(`[ClickUp] Moving task to Review`);
-
-    //TODO
-    //Find that ClickUp task
-    //Update status to "Review"
+    await updateTaskStatus(taskId, "Review")
 }
 
 /**
  * Move task from Review to In Progress when commit count is 3
  */
 export async function moveTaskToInProgress(
-    event: GitLabEvent
+    taskId: number,
 ): Promise<void>{
-    console.log(`[ClickUp] Moving task to In Progress`);
-
-    //TODO
-    //Find that ClickUp task
-    //Update status to "In Progress"
+    await updateTaskStatus(taskId, "In Progress")
 }
 
 
@@ -103,26 +93,16 @@ export async function moveTaskToInProgress(
  * Move task from In Progress to testing when a MR is opened
  */
 export async function moveTaskToTesting(
-    event: GitLabEvent
+    taskId: number,
 ): Promise<void>{
-    console.log(`[ClickUp] Moving task to Testing`);
-
-    //TODO
-    //Find that CLickUp task
-    //Update status "Testing"
+    await updateTaskStatus(taskId, "Testing")
 }
 
 /**
  * Move task to Done when MR is merged.
  */
 export async function moveTaskToDone(
-    event: GitLabEvent
+    taskId: number,
 ): Promise<void> {
-    console.log(
-        `[ClickUp] Moving task to Done`
-    );
-
-    // TODO
-    // Find that ClickUp task
-    // Update status to "Done"
+    await updateTaskStatus(taskId, "Done")
 }

@@ -10,6 +10,7 @@ export const handleGitLabWebhook = async (
     res: Response,
 ) => {
     try {
+        //putting a label on payload in advance
         const payload = req.body as GitLabPayload;
         
         await processWebhook(payload);

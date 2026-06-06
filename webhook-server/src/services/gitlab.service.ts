@@ -12,17 +12,21 @@ import { GitLabEvent, GitLabEventType } from "../../../shared/src/types/event.ty
 const validatePayload = (
     payload: GitLabPayload,
 ): void => {
-    if(!payload.object_kind) {
+    if(!payload.objectKind) {
         throw new Error("Missing required field: object_kind");
     }
 
-    if(!payload.project.id) {
+    if(payload.project?.id == null) {
         throw new Error("Missing required field: project.id")
     };
 
-    if(!payload.project.name) {
+    if(!payload.project?.name) {
         throw new Error("Missing required field: project.name")
     };
+
+    if(!payload.resource?.title){
+        throw new Error("Missing resource title")
+    }
 }
 
 //determine event type
@@ -30,18 +34,36 @@ const determineEventType = (
     payload: GitLabPayload,
 ): GitLabEventType => {
     if(
-        payload.object_kind === "issue" &&
+        payload.objectKind === "issue" &&
         payload.assignees &&
         payload.assignees.length > 0
     ){
         return "issue-assigned";
     }
 
-    if (payload.object_kind === "merge-request") return "merge-request";
+    if (payload.objectKind === "merge-request") return "merge-request";
 
-    if (payload.object_kind === "push") return "push";
+    if (payload.objectKind === "push") return "push";
 
-    throw new Error(`Unsupported event type: ${payload.object_kind}`)
+    throw new Error(`Unsupported event type: ${payload.objectKind}`)
+}
+
+//extract ClickUpTaskId from title
+const extractClickUpTaskId = (
+    title: string,
+): number =>{
+    if(!title){
+        throw new Error("Missing title")
+    }
+
+    //title form: [CU-123] Refactor Auth Flow
+    const match = title.match(/\[CU-(\d+)\]/)
+
+    if(!match) {
+        throw new Error(`Invalid title format: ${title}`);
+    }
+
+    return Number(match[1]);
 }
 
 //transform payload
@@ -52,11 +74,18 @@ const transformPayload = (
     return {
         source: "gitlab",
         eventType,
+
+        clickUpTaskId: extractClickUpTaskId(
+            payload.resource.title
+        ),
+
         projectId: payload.project.id,
         projectName: payload.project.name,
-        title: payload.object_attributes?.title,
-        description: payload.object_attributes?.description,
-        author: payload.user_name ?? "Unknown"
+        author: payload.userName,
+
+        title: payload.resource.title,
+        description: payload.resource.description,
+        url: payload.resource.url,
     };
 };
 

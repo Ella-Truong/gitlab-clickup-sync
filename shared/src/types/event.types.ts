@@ -8,12 +8,19 @@ export type MergeRequestState = "opened" | "merged";
 export interface GitLabEvent {
     source: "gitlab";
     eventType: GitLabEventType;
-    projectId?: number;
-    projectName?: string;
-    author?: string;
+
+    clickUpTaskId: number;
+
+    projectId: number;
+    projectName: string;
+    author: string;
+
+    gitlabObjectId?: number;
+    url?: string;
+
     title?: string;
-    issueId?: number;
     description?: string;
+
     commitCount?: number;
     mergeRequestState?: MergeRequestState;
 }
