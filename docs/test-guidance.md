@@ -40,6 +40,11 @@ project-root/
 
 - `tests/e2e/` contains end-to-end test cases covering the complete GitLab → RabbitMQ → Worker → ClickUp workflow.
 - `tests/e2e/fixtures/` contains sample GitLab webhook payloads used during testing.
+   - establish a single source of truth for testing data
+   - prevent duplication of event payloads across test files
+   - improve test readability and maintainability
+   - makes it easier to add new test scenarios in the future
+   - allow tests to focus on behaviors rather than payload construction
 - `tests/setup/` contains shared test utilities, mocks, and environment setup.
 - `docs/e2e-testing-guide.md` documents the E2E testing strategy and scenarios.
 
