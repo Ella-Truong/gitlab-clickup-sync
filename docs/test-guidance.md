@@ -36,6 +36,13 @@ project-root/
     └── e2e-testing-guide.md
 ```
 
+### Structure Overview
+
+- `tests/e2e/` contains end-to-end test cases covering the complete GitLab → RabbitMQ → Worker → ClickUp workflow.
+- `tests/e2e/fixtures/` contains sample GitLab webhook payloads used during testing.
+- `tests/setup/` contains shared test utilities, mocks, and environment setup.
+- `docs/e2e-testing-guide.md` documents the E2E testing strategy and scenarios.
+
 ## System Flow
 
 ```text
