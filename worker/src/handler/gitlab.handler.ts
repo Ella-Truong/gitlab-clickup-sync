@@ -11,7 +11,7 @@ import {
     moveTaskToInProgress,
     moveTaskToReview,
     moveTaskToTesting,
-} from "../services/clickup";
+} from "../services/clickup.service";
 
 
 export async function handleGitLabEvent(event: GitLabEvent): Promise<void>{

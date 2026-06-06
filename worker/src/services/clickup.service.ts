@@ -20,12 +20,10 @@ export async function createClickUpTask(
         `${CLICKUP_API_URL}/list/${CLICKUP_LIST_ID}/task`,
         {
             method: "POST",
-
             headers: {
                 Authorization: CLICKUP_TOKEN!,
                 "Content-Type": "application/json",
             },
-
             body: JSON.stringify({
                 name: event.title,
                 description: event.description,
@@ -39,7 +37,6 @@ export async function createClickUpTask(
     }
     
     const task = await res.json();
-
     console.log(`Created ClickUp task ${task.id}`)
 }
 
