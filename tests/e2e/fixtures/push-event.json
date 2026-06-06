@@ -1,0 +1,9 @@
+{
+    "source": "gitlab",
+    "eventType": "push",
+    "clickUpTaskId": 101,
+    "projectId": 1,
+    "projectName": "GitLab ClickUp Sync",
+    "author": "Ella",
+    "commitCount": 1
+  }

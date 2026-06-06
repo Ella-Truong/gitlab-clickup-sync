@@ -1,0 +1,14 @@
+{
+    "source": "gitlab",
+    "eventType": "issue-assigned",
+    "clickUpTaskId": 101,
+    "projectId": 1,
+    "projectName": "GitLab ClickUp Sync",
+    "author": "Ella",
+    "gitlabObjectId": 1001,
+    "title": "Implement Login",
+    "description": "Create login page",
+    "url": "https://gitlab.com/example/issues/1001"
+  }
+
+  

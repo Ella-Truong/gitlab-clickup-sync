@@ -1,0 +1,11 @@
+{
+    "source": "gitlab",
+    "eventType": "merge-request",
+    "clickUpTaskId": 101,
+    "projectId": 1,
+    "projectName": "GitLab ClickUp Sync",
+    "author": "Ella",
+    "gitlabObjectId": 5001,
+    "title": "Feature Login",
+    "mergeRequestState": "opened"
+  }
