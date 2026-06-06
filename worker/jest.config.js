@@ -8,4 +8,8 @@ module.exports = {
   transform: {
     ...tsJestTransformCfg,
   },
+  testMatch: [
+    "**/tests/**/*.test.ts"
+  ],
+  clearMocks: true,
 };
