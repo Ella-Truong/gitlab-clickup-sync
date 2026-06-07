@@ -169,8 +169,6 @@ For more details, see:
 
 - [ARCHITECTURE](docs/architecture.md)
 - [TEST GUIDANCE](docs/test-guidance.md)
-
-### Engineering Notes
 - [System Architecture Notes](notes/system-architecture.md)
 - [RabbitMQ Notes](notes/rabbitmq.md)
 - [E2E Testing Notes](notes/e2e-testing.md)
