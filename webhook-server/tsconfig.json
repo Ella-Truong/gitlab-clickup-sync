@@ -1,10 +1,14 @@
-//define how TypeScript is compiled in the project
+// tsconfig.ts tell TypeScript which files to compile, 
+// how to compile them, 
+// and where to put the output
+
 {
   "extends": "../tsconfig.base.json",
+  
 
+  //how to compile
   "compilerOptions": {
     "outDir": "./dist",   //compiled JavaScript
-
     "sourceMap": true,
   },
 

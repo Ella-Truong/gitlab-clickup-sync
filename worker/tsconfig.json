@@ -4,10 +4,10 @@
   "compilerOptions": {
     //specify where compiled JS goes -> worker.js
     "outDir": "./dist",
-    "types": ["node", "jest"]
+    "types": ["node","jest"]
   },
   
-  //combine everything under src/
+  //worker compiles files from 2 locations: worker/src and shared/src
   "include": ["src/**/*", "../shared/src/**/*"],
   //ignore node_modules/ and dist/, TypeScript don't need to compile these
   "exclude": ["node_modules", "dist"],

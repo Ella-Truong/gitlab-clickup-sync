@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+      //default root folder for all projects
       "rootDir": ".",
       "target": "ES2020",
       "module": "CommonJS",

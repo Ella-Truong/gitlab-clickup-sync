@@ -2,6 +2,7 @@
   "extends": "../tsconfig.base.json",
 
   "compilerOptions": {
+    //TypeScript treats shared/src as the root of source code
     "rootDir": "src",
   },
   
