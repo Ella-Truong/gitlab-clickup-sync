@@ -1,21 +1,3 @@
-# System Architecture
-
-## Overview
-
-GitLab → ClickUp Workflow Sync is a lightweight event-driven backend project that automates task workflow updates based on GitLab development activity.
-
-The system receives GitLab webhook events, sends them through RabbitMQ for asynchronous processing, and updates ClickUp task statuses automatically.
-
-The project is intentionally small and focused on learning:
-- RabbitMQ
-- Docker
-- asynchronous processing
-- webhook systems
-- multi-service communication
-- deployment on Render
-
----
-
 # High-Level Architecture
 
 ```text
@@ -37,39 +19,40 @@ ClickUp API
 ```text
 project-root/
 │
+├── docs/
+│   ├── architecture.md
+│   └── test-guidance.md
+│
+├── notes/
+│   ├── system-architecture.md
+│   ├── rabbitmq.md
+│   └── e2e-testing.md
+│
+├── shared/
+│   ├── src/
+│   │   └── types/
+│   └── tsconfig.json
+│
 ├── webhook-server/
 │   ├── src/
-│   │   ├── routes/
-│   │   ├── controllers/
-│   │   ├── services/
-│   │   ├── types/
-│   │   ├── app.ts
-│   │   └── server.ts
-│   │
-│   ├── Dockerfile
+│   ├── controllers/
+│   ├── routes/
+│   ├── services/
 │   ├── package.json
 │   └── tsconfig.json
 │
 ├── worker/
 │   ├── src/
-│   │   ├── consumers/
-│   │   ├── services/
-│   │   ├── worker.ts
-│   │   └── app.ts
-│   │
-│   ├── Dockerfile
+│   ├── tests/
+│   ├── jest.config.js  
+|   ├── jest.setup.ts
 │   ├── package.json
 │   └── tsconfig.json
 │
-├── shared/
-│   └── types/
-│
 ├── docker-compose.yml
-├── .env
-├── .gitignore
+├── tsconfig.base.json
 └── README.md
 ```
-
 ---
 
 # Core Services

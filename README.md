@@ -1,3 +1,80 @@
+# GitLab → ClickUp Workflow Sync
+
+Event-driven workflow automation system that synchronizes GitLab development activity with ClickUp task workflows using webhooks, RabbitMQ, background workers, and asynchronous processing.
+
+Built to reduce manual task updates, minimize context switching, and improve engineering workflow visibility during development.
+
+---
+
+## Overview
+
+Engineering teams often work across multiple platforms:
+
+- GitLab/GitHub
+- ClickUp
+- code reviews
+- implementation branches
+- merge requests
+
+A common workflow issue is that developers forget to manually update task status after activities such as:
+
+- opening Merge Requests
+- pushing implementation commits
+- merging completed work
+
+This project automates workflow state transitions based on real GitLab activity.
+---
+## Quick Start
+
+### Prerequisites
+
+- Node.js
+- Docker
+- GitLab account
+- ClickUp account
+
+### Install Dependencies
+
+```bash
+cd webhook-server
+npm install
+
+cd ../worker
+npm install
+```
+### Start RabbitMQ
+
+```bash
+docker-compose up -d
+```
+
+RabbitMQ UI:
+
+```text
+http://localhost:15672
+```
+### Start Services
+
+Webhook Server:
+
+```bash
+cd webhook-server
+npm run dev
+```
+
+Worker:
+
+```bash
+cd worker
+npm run dev
+```
+### Run Tests
+
+```bash
+cd worker
+npm test
+```
+---
 ## Documentation & Notes
 
 This repository includes both project documentation and engineering notes created during development.
@@ -90,5 +167,10 @@ This design separates event ingestion from workflow processing, improving:
 
 For more details, see:
 
-- `docs/architecture.md`
-- `notes/system-architecture.md`
+- [ARCHITECTURE](docs/architecture.md)
+- [TEST GUIDANCE](docs/test-guidance.md)
+
+### Engineering Notes
+- [System Architecture Notes](notes/system-architecture.md)
+- [RabbitMQ Notes](notes/rabbitmq.md)
+- [E2E Testing Notes](notes/e2e-testing.md)
