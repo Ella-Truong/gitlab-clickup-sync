@@ -6,7 +6,7 @@
  */
 
 import { connectRabbitMQ } from "../services/rabbitmq";
-
+import { handleGitLabEvent } from "../handler/gitlab.handler";
 
 const QUEUE_NAME = "gitlab-events";
 
@@ -14,8 +14,7 @@ export async function startConsumer(){
     //start a connection with RabbitMQ
     const connection = await connectRabbitMQ();
 
-    //after connecting, create a channel
-    //this is an AMQP channel used to communicate with RabbitMQ
+   //create communication channel
     const channel = await connection.createChannel();
     
     //make sure a queue with this name EXIST
@@ -28,8 +27,9 @@ export async function startConsumer(){
     
     //start consumer
     //whenever a new message arrives in QUEUE_NAME, call this function
-    await channel.consume(QUEUE_NAME, (msg) => {
+    await channel.consume(QUEUE_NAME, async (msg) => {
         //no message was received -> stop
+        console.log("Consumer received message")
         if (!msg) return;
 
         try {
@@ -42,14 +42,25 @@ export async function startConsumer(){
             
             //extract data (msg.content) from the message -> payload
             const payload = JSON.parse(msg.content.toString());
-            
-            console.log("Received event: ");
-            console.log(payload);
+            console.log(`Received ${payload.eventType} event from ${payload.projectName}`)
+
+            //process business logic
+            await handleGitLabEvent(payload)
+
+            console.log(`Successfully processed ${payload.eventType} event`)
             
             //acknowledge the original message is successfully handled
             channel.ack(msg);
         }catch(error){
-            console.error("Failed to process message", error)
+            console.error("Failed to process message", error);
+
+            /**
+             * Message is NOT acknowledged
+             * 
+             * RabbitMQ will keep the message unacknowledged, 
+             * allowing it to be retried or investigated
+             */
+            
         }
     })
 }

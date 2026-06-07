@@ -1,5 +1,4 @@
 //define how TypeScript is compiled in the project
-
 {
   "extends": "../tsconfig.base.json",
 
