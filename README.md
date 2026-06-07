@@ -45,7 +45,7 @@ npm install
 ### Start RabbitMQ
 
 ```bash
-docker-compose up -d
+docker compose up -d rabbitmq
 ```
 
 RabbitMQ UI:
