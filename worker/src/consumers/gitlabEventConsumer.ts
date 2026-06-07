@@ -29,6 +29,7 @@ export async function startConsumer(){
     //whenever a new message arrives in QUEUE_NAME, call this function
     await channel.consume(QUEUE_NAME, async (msg) => {
         //no message was received -> stop
+        console.log("Consumer received message")
         if (!msg) return;
 
         try {

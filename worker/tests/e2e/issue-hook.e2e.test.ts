@@ -27,12 +27,12 @@ describe("Issue Hook E2E", () => {
 
     it("should create a ClickUp task when an issue is assigned", async () => {
         await handleGitLabEvent(issueEvent as GitLabEvent);
-        expect(mockCreateClickUpTask(1))
+        expect(mockCreateClickUpTask)
     })
 
     it("should pass the event payload to createClickUpTask", async () => {
         await handleGitLabEvent(issueEvent as GitLabEvent);
 
-        expect(mockCreateClickUpTask).toHaveBeenCalledWith(issueEvent)
+        expect(mockCreateClickUpTask).toHaveBeenCalledWith(issueEvent as GitLabEvent)
     })
 })

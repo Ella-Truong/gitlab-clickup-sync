@@ -8,5 +8,6 @@
 import amqp from "amqplib";
 
 export async function connectRabbitMQ() {
+    console.log("RabbitMQ URL: ", process.env.RABBITMQ_URL)
     return amqp.connect(process.env.RABBITMQ_URL!);
 }

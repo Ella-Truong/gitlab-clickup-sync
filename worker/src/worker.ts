@@ -1,4 +1,9 @@
 //start the worker
+import { start } from "node:repl";
 import { startConsumer } from "./consumers/gitlabEventConsumer";
 
-startConsumer();
+async function bootstrap(){
+    await startConsumer();
+}
+
+bootstrap();
