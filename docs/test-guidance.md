@@ -6,34 +6,27 @@ This document describes the End-to-End (E2E) testing strategy for the GitLab-to-
 
 The purpose of E2E testing is to verify that GitLab webhook events are correctly processed through the entire system and result in the expected ClickUp actions.
 
+---
 ## Test Directory Structure
 
 ```text
-project-root/
-│
-├── webhook-server/
-│   └── src/
-│
-├── worker/
-│   └── src/
+worker/
+├── src/
+│   ├── consumers/
+│   ├── handler/
+│   └── services/
 │
 ├── tests/
 │   ├── e2e/
-│   │   ├── gitlab-to-clickup.e2e.test.ts
-│   │   ├── issue-hook.e2e.test.ts
-│   │   ├── push-hook.e2e.test.ts
-│   │   ├── merge-request.e2e.test.ts
+│   │   ├── consumer.e2e.test.ts
 │   │   └── fixtures/
-│   │       ├── issue-event.json
-│   │       ├── push-event.json
-│   │       └── merge-request-event.json
+│   │       └── issue-event.json
 │   │
 │   └── setup/
 │       ├── test-rabbitmq.ts
 │       └── mock-clickup.ts
 │
-└── docs/
-    └── e2e-testing-guide.md
+└── jest.config.ts
 ```
 
 ### Structure Overview
@@ -48,48 +41,55 @@ project-root/
 - `tests/setup/` contains shared test utilities, mocks, and environment setup.
 - `docs/e2e-testing-guide.md` documents the E2E testing strategy and scenarios.
 
-## System Flow
+---
+## E2E Test Scope
 
 ```text
-GitLab
-    ↓
-Webhook Server
-    ↓
+Test
+ ↓
 RabbitMQ
-    ↓
-Worker
-    ↓
-ClickUp Service
-    ↓
-ClickUp API
+ ↓
+Worker Consumer
+ ↓
+Event Handler
+ ↓
+ClickUp Service (Mocked)
 ```
-
-## Test Scope
 
 The E2E tests validate the following:
 
-- GitLab webhook requests are received successfully
-- Events are published to RabbitMQ
-- Worker consumes events from RabbitMQ
-- Event payloads are mapped correctly
-- ClickUp service methods are invoked with correct data
-- Unsupported events are handled gracefully
-- Errors are logged without crashing the worker
+- Messages are published successfully to RabbitMQ
+- Worker consumers receive messages correctly
+- Event handlers process payloads correctly
+- ClickUp service methods are invoked as expected
+- The worker remains stable during processing
+
+---
 
 ## Test Environment
 
 ### Required Services
 
-- Webhook Server
 - Worker Service
 - RabbitMQ
 - Mocked ClickUp Service
 
-### Testing Approach
+### RabbitMQ
 
-To avoid creating real ClickUp tasks during automated testing, the ClickUp service will be mocked.
+RabbitMQ must be running before executing E2E tests
 
-The test will focus on verifying that the correct ClickUp actions are triggered based on incoming GitLab events.
+```bash
+docker compose up -d rabbitmq
+```
+---
+
+## Testing Approach
+
+* To avoid creating real ClickUp tasks during automated testing, the ClickUp service will be mocked
+* The tests use a real RabbitMQ instance and a real consumer while replacing ClickUp API calls with Jest mocks
+* The test will focus on verifying that the correct ClickUp actions are triggered based on incoming GitLab events
+
+---
 
 ## Test Scenarios
 
