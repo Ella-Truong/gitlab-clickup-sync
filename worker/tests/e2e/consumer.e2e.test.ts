@@ -1,8 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll } from "@jest/globals";
 
 import "../setup/mock-clickup";
-import { handleGitLabEvent } from "../../src/handler/gitlab.handler";
-
 import issueEvent from "./fixtures/issue-event.json";
 
 import { startConsumer } from "../../src/consumers/gitlabEventConsumer";
@@ -16,8 +14,6 @@ import {
 import {
     mockCreateClickUpTask,
 } from "../setup/mock-clickup";
-
-import { GitLabEvent } from "../../../shared/src/types/event.types";
 
 describe("Consumer E2E", () => {
 
@@ -36,7 +32,7 @@ describe("Consumer E2E", () => {
         await publishMessage(issueEvent);
 
         await new Promise(resolve =>
-            setTimeout(resolve, 500)
+            setTimeout(resolve, 1000)
         );
 
         expect(mockCreateClickUpTask)
