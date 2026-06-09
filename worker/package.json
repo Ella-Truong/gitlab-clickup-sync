@@ -7,6 +7,7 @@
     "dev": "ts-node-dev --respawn src/worker.ts",
     "build": "tsc",
     "start": "node dist/worker.js",
+
     "test": "dotenv -e .env.test -- jest",
     "test:watch": "jest --watch",
     "test:e2e": "jest tests/e2e"

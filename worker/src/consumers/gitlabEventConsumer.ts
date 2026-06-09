@@ -1,7 +1,7 @@
 /**
  * Consumes GitLab events from RabbitMQ
  * For now, console.log(event) when a message arrives
- * This stage happens between RabbitMQ and ClickUp
+ * This stage happens between RabbitMQ and ClickUp, done by worker
  * This function doesn't return anything, just waiting for the setup to complete
  */
 
@@ -49,7 +49,8 @@ export async function startConsumer(){
 
             console.log(`Successfully processed ${payload.eventType} event`)
             
-            //acknowledge the original message is successfully handled
+            //acknowledge the message is successfully handled
+            //can remove it from the queue 
             channel.ack(msg);
         }catch(error){
             console.error("Failed to process message", error);
