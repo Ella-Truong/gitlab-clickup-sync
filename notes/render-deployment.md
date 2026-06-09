@@ -55,7 +55,7 @@ ClickUp API
 During local development, RabbitMQ was hosted through Docker:
 
 ```env
-RABBITMQ_URL=amqp://guest:guest@localhost:5672
+RABBITMQ_URL=amqp://<username>:<password>@<host>
 ```
 
 This approach works well for development but is not suitable for cloud deployment because:
