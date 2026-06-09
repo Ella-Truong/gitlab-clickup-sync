@@ -4,7 +4,7 @@ import { connectRabbitMQ } from "./services/rabbitmq.service";
 
 dotenv.config();
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT;
 
 const startServer = async () => {
     await connectRabbitMQ();
