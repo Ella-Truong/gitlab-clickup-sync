@@ -30,7 +30,7 @@ A common workflow issue is that developers forget to manually update task status
 - **Messaging**: RabbitMQ, amqplib
 - **Testing**: Jest, Integration Testing, E2E Testing
 - **Infrastructure**: Docker, Docker Compose, Render
-- **Integrations**: GitLab Webhooks, ClickUp API
+- **Integrations**: GitLab/GitHub Webhooks, ClickUp API
 
 ---
 ## Quick Start
