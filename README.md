@@ -24,6 +24,15 @@ A common workflow issue is that developers forget to manually update task status
 
 This project automates workflow state transitions based on real GitLab activity.
 ---
+## Tech Stack
+
+**Backend**: Node.js, TypeScript, Express
+**Messaging**: RabbitMQ, amqplib
+**Testing**: Jest, Integration Testing, E2E Testing
+**Infrastructure**: Docker, Docker Compose, Render
+**Integrations**: GitLab Webhooks, ClickUp API
+
+---
 ## Quick Start
 
 ### Prerequisites
