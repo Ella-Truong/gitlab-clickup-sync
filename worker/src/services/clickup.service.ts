@@ -3,12 +3,8 @@
  * Authentication
  * Request payloads
  */
-
+import { getEnv } from "../config/env";
 import { GitLabEvent } from "../../../shared/src/types/event.types";
-
-const CLICKUP_API_URL = process.env.CLICKUP_API_URL;
-const CLICKUP_TOKEN = process.env.CLICKUP_TOKEN;
-const CLICKUP_LIST_ID = process.env.CLICKUP_LIST_ID;
 
 /**
  * Create a new ClickUp task when a GitLab issue is assigned
@@ -16,12 +12,18 @@ const CLICKUP_LIST_ID = process.env.CLICKUP_LIST_ID;
 export async function createClickUpTask(
     event: GitLabEvent
 ): Promise<void>{
+    const {
+        clickupApiUrl,
+        clickupToken,
+        clickupListId,
+    } = getEnv();
+
     const res = await fetch(
-        `${CLICKUP_API_URL}/list/${CLICKUP_LIST_ID}/task`,
+        `${clickupApiUrl}/list/${clickupListId}/task`,
         {
             method: "POST",
             headers: {
-                Authorization: CLICKUP_TOKEN!,
+                Authorization: clickupToken,
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
@@ -31,6 +33,7 @@ export async function createClickUpTask(
             }),
         }
     );
+    
 
     if (!res.ok) {
         throw new Error(`ClickUp API error: ${res.status}`);
@@ -48,12 +51,13 @@ async function updateTaskStatus(
     taskId: number,
     status: string,
 ): Promise<void>{
+    const {clickupApiUrl, clickupToken} = getEnv();
     const res = await fetch(
-        `${CLICKUP_API_URL}/task/${taskId}`,
+        `${clickupApiUrl}/task/${taskId}`,
         {
             method: "PUT",
             headers: {
-                Authorization: CLICKUP_TOKEN!,
+                Authorization: clickupToken,
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(
