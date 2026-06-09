@@ -181,3 +181,4 @@ For more details, see:
 - [System Architecture Notes](notes/system-architecture.md)
 - [RabbitMQ Notes](notes/rabbitmq.md)
 - [E2E Testing Notes](notes/e2e-testing.md)
+- [Deployment](notes/render-deployment.md)
