@@ -22,7 +22,7 @@ A common workflow issue is that developers forget to manually update task status
 - pushing implementation commits
 - merging completed work
 
-This project automates workflow state transitions based on real GitLab activity.
+
 ---
 ## Tech Stack
 
