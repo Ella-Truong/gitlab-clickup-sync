@@ -13,7 +13,7 @@ const validatePayload = (
     payload: GitLabPayload,
 ): void => {
     if(!payload.objectKind) {
-        throw new Error("Missing required field: object_kind");
+        throw new Error(`Missing required field: ${payload.objectKind}`);
     }
 
     if(payload.project?.id == null) {
@@ -34,7 +34,7 @@ const determineEventType = (
     payload: GitLabPayload,
 ): GitLabEventType => {
     if(
-        payload.objectKind === "issue" &&
+        payload.objectKind === "assigned" &&
         payload.assignees &&
         payload.assignees.length > 0
     ){
