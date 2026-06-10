@@ -24,7 +24,7 @@ const validatePayload = (
         throw new Error("Missing required field: project.name")
     };
 
-    if(!payload.resource?.title){
+    if(!payload.issue?.title){
         throw new Error("Missing resource title")
     }
 }
@@ -76,16 +76,16 @@ const transformPayload = (
         eventType,
 
         clickUpTaskId: extractClickUpTaskId(
-            payload.resource.title
+            payload.issue.title
         ),
 
         projectId: payload.project.id,
         projectName: payload.project.name,
         author: payload.userName,
 
-        title: payload.resource.title,
-        description: payload.resource.description,
-        url: payload.resource.url,
+        title: payload.issue.title,
+        description: payload.issue.description,
+        url: payload.issue.url,
     };
 };
 

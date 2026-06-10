@@ -17,7 +17,7 @@ export interface GitLabPayload {
     commits?: GitLabCommit[];
     assignees?: GitLabAssignee[];
 
-    resource: {
+    issue: {
         id: number;
         title: string;          // ex: Refactor Auth Flow
         description?: string;
