@@ -14,9 +14,9 @@
  * Real ClickUp API
  *
  * Test Flow:
- * GitLab Event
+ * GitLab Event (fixtures)
  *      ↓
- * handleGitLabEvent()
+ * handleGitLabEvent() 
  *      ↓
  * Mock ClickUp Service
  *      ↓
@@ -49,6 +49,7 @@ import { GitLabEvent } from "../../../shared/src/types/event.types";
  * expect(mockCreateClickUpTask).toHaveBeenCalledTimes(1);
  * expect(mockMoveTaskToReview).toHaveBeenCalledWith(101);
  */
+
 export const mockCreateClickUpTask = jest.fn<(event: GitLabEvent) => Promise<void>>();
 export const mockMoveTaskToReview = jest.fn();
 export const mockMoveTaskToInProgress = jest.fn();
