@@ -7,7 +7,6 @@
     "dev": "ts-node-dev --respawn src/worker.ts",
     "build": "tsc",
     "start": "node dist/worker/src/worker.js",
-
     "test": "dotenv -e .env.test -- jest",
     "test:watch": "jest --watch",
     "test:e2e": "jest tests/e2e"
@@ -18,9 +17,11 @@
   "type": "commonjs",
   "dependencies": {
     "amqplib": "^2.0.1",
-    "dotenv": "^17.4.2"
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1"
   },
   "devDependencies": {
+    "@types/express": "^5.0.6",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.9.1",
     "dotenv-cli": "^11.0.0",
