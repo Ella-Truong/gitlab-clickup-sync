@@ -3,17 +3,18 @@
  */
 import { Request, Response } from "express";
 import { processWebhook } from "../services/gitlab.service";
-import { GitLabPayload } from "../../../shared/src/types/gitlab.types";
+import { GitHubEventType } from "../../../shared/src/types/github.types";
 
-export const handleGitLabWebhook = async (
+export const handleGitHubWebhook = async (
     req: Request,
     res: Response,
 ) => {
     try {
-        //putting a label on payload in advance
-        const payload = req.body as GitLabPayload;
+        const eventType = req.header(
+            "X-GitHub-Event",
+        ) as GitHubEventType;
         
-        await processWebhook(payload);
+        await processWebhook(req.body, eventType);
         
         return res.status(200).json({
             success: true,

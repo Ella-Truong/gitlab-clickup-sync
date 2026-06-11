@@ -4,13 +4,13 @@
  * Request payloads
  */
 import { getEnv } from "../config/env";
-import { GitHubEvent } from "../../../shared/src/types/event.types";
 
 /**
  * Create a new ClickUp task when a GitLab issue is assigned
  */
 export async function createClickUpTask(
-    event: GitHubEvent
+    title: string,
+    description?: string,
 ): Promise<void>{
     const {
         clickupApiUrl,
@@ -27,20 +27,19 @@ export async function createClickUpTask(
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                name: event.title,
-                description: event.description,
+                name: title,
+                description,
                 status: "To Do",
             }),
         }
     );
     
-
     if (!res.ok) {
         throw new Error(`ClickUp API error: ${res.status}`);
     }
     
     const task = await res.json();
-    console.log(`Created ClickUp task ${task.id}`)
+    return task.id;
 }
 
 
@@ -52,6 +51,7 @@ async function updateTaskStatus(
     status: string,
 ): Promise<void>{
     const {clickupApiUrl, clickupToken} = getEnv();
+    
     const res = await fetch(
         `${clickupApiUrl}/task/${taskId}`,
         {
