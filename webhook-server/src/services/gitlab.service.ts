@@ -5,15 +5,15 @@
  */
 
 import { publishMessage } from "./rabbitmq.service";
-import { GitLabPayload } from "../../../shared/src/types/gitlab.types";
-import { GitLabEvent, GitLabEventType } from "../../../shared/src/types/event.types";
+import { GitHubPayload } from "../../../shared/src/types/gitlab.types";
+import { GitHubEvent, GitHubEventType } from "../../../shared/src/types/event.types";
 
 //validate payload
 const validatePayload = (
-    payload: GitLabPayload,
+    payload: GitHubPayload,
 ): void => {
-    if(!payload.objectKind) {
-        throw new Error(`Missing required field: ${payload.objectKind}`);
+    if(!payload.action) {
+        throw new Error(`Missing required field: ${payload.action}`);
     }
 
     if(payload.project?.id == null) {
@@ -31,21 +31,21 @@ const validatePayload = (
 
 //determine event type
 const determineEventType = (
-    payload: GitLabPayload,
-): GitLabEventType => {
+    payload: GitHubPayload,
+): GitHubEventType => {
     if(
-        payload.objectKind === "assigned" &&
+        payload.action === "assigned" &&
         payload.assignees &&
         payload.assignees.length > 0
     ){
         return "issue-assigned";
     }
 
-    if (payload.objectKind === "merge-request") return "merge-request";
+    if (payload.action === "merge-request") return "merge-request";
 
-    if (payload.objectKind === "push") return "push";
+    if (payload.action === "push") return "push";
 
-    throw new Error(`Unsupported event type: ${payload.objectKind}`)
+    throw new Error(`Unsupported event type: ${payload.action}`)
 }
 
 //extract ClickUpTaskId from title
@@ -68,9 +68,9 @@ const extractClickUpTaskId = (
 
 //transform payload
 const transformPayload = (
-    payload: GitLabPayload,
-    eventType: GitLabEventType
-): GitLabEvent => {
+    payload: GitHubPayload,
+    eventType: GitHubEventType
+): GitHubEvent => {
     return {
         source: "gitlab",
         eventType,
@@ -91,7 +91,7 @@ const transformPayload = (
 
 
 export const processWebhook = async (
-    payload: GitLabPayload,
+    payload: GitHubPayload,
 ): Promise<void> => {
     validatePayload(payload);
     const eventType = determineEventType(payload);

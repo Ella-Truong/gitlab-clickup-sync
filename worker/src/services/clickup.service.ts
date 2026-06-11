@@ -4,13 +4,13 @@
  * Request payloads
  */
 import { getEnv } from "../config/env";
-import { GitLabEvent } from "../../../shared/src/types/event.types";
+import { GitHubEvent } from "../../../shared/src/types/event.types";
 
 /**
  * Create a new ClickUp task when a GitLab issue is assigned
  */
 export async function createClickUpTask(
-    event: GitLabEvent
+    event: GitHubEvent
 ): Promise<void>{
     const {
         clickupApiUrl,

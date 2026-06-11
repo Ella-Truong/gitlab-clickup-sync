@@ -2,10 +2,10 @@
  * Defines TypeScript types for GitLab webhook payloads.
  */
 
-export type GitLabObjectKind = "assigned" | "push" | "merge-request"
+export type GitHubObjectKind = "assigned" | "push" | "merge-request"
 
-export interface GitLabPayload {
-    objectKind: GitLabObjectKind;
+export interface GitHubPayload {
+    action: s
     userName: string;
 
     project: {
