@@ -4,6 +4,10 @@
  * Request payloads
  */
 import { getEnv } from "../config/env";
+import { 
+    ClickUpTask, 
+    ClickUpTaskListResponse 
+} from "../../../shared/src/types/clickup.types";
 
 /**
  * Create a new ClickUp task when a GitLab issue is assigned
@@ -11,7 +15,7 @@ import { getEnv } from "../config/env";
 export async function createClickUpTask(
     title: string,
     description?: string,
-): Promise<void>{
+): Promise<string>{
     const {
         clickupApiUrl,
         clickupToken,
@@ -38,20 +42,48 @@ export async function createClickUpTask(
         throw new Error(`ClickUp API error: ${res.status}`);
     }
     
-    const task = await res.json();
+    const task = await res.json() as ClickUpTask;
     return task.id;
 }
 
+export async function findTaskById(
+    issueId: number
+): Promise<ClickUpTask | null>{
+    const {
+        clickupApiUrl,
+        clickupToken,
+        clickupListId
+    } = getEnv();
+
+    const res = await fetch(
+        `${clickupApiUrl}/list/${clickupListId}/task`,
+        {
+            headers:{
+                Authorization: clickupToken
+            },
+        }
+    )
+
+    if (!res.ok){
+        throw new Error(`ClickUp API error: ${res.status}`)
+    }
+
+    const data = await res.json() as ClickUpTaskListResponse;
+
+    return (
+        data.tasks.find(task => task.name.startsWith(`[#${issueId}]`)) ?? null
+    );
+}
 
 /**
  * Internal helper function for status updates
  */
 async function updateTaskStatus(
-    taskId: number,
+    taskId: string,
     status: string,
 ): Promise<void>{
     const {clickupApiUrl, clickupToken} = getEnv();
-    
+
     const res = await fetch(
         `${clickupApiUrl}/task/${taskId}`,
         {
@@ -75,7 +107,7 @@ async function updateTaskStatus(
  * Move task to Review when first commit is pushed
  */
 export async function moveTaskToReview(
-    taskId: number,
+    taskId: string,
 ): Promise<void>{
     await updateTaskStatus(taskId, "Review")
 }
@@ -84,7 +116,7 @@ export async function moveTaskToReview(
  * Move task from Review to In Progress when commit count is 3
  */
 export async function moveTaskToInProgress(
-    taskId: number,
+    taskId: string,
 ): Promise<void>{
     await updateTaskStatus(taskId, "In Progress")
 }
@@ -94,7 +126,7 @@ export async function moveTaskToInProgress(
  * Move task from In Progress to testing when a MR is opened
  */
 export async function moveTaskToTesting(
-    taskId: number,
+    taskId: string,
 ): Promise<void>{
     await updateTaskStatus(taskId, "Testing")
 }
@@ -103,7 +135,7 @@ export async function moveTaskToTesting(
  * Move task to Done when MR is merged.
  */
 export async function moveTaskToDone(
-    taskId: number,
+    taskId: string,
 ): Promise<void> {
     await updateTaskStatus(taskId, "Done")
 }

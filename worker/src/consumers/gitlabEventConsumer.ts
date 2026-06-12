@@ -6,7 +6,7 @@
  */
 
 import { connectRabbitMQ } from "../services/rabbitmq";
-import { handleGitLabEvent } from "../handler/gitlab.handler";
+import { handleGitLabEvent } from "../handler/github.handler";
 
 const QUEUE_NAME = "gitlab-events";
 
