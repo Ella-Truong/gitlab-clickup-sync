@@ -2,9 +2,16 @@
  * Define application events published to RabbitMQ
  */
 
-import { GitHubEventType, GitHubPayload } from "./github.types";
+import { GitHubPayload } from "./github.types";
 
-export interface GitHubEvent{
-    type: GitHubEventType;
+export enum GitHubEventType {
+    ISSUE_ASSIGNED = "issue.assgined",
+    PUSH_RECEIVED = "push.received",
+    PULL_REQUEST_OPENED = "pull_request.opened",
+    PULL_REQUEST_MERGED = "pull_request.merged",
+}
+
+export interface GitHubEvent {
+    type: GitHubEventType,
     payload: GitHubPayload
 }

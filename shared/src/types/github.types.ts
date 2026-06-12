@@ -1,16 +1,11 @@
 /**
- * Defines TypeScript types for GitLab webhook payloads.
+ * Defines TypeScript types for GitHub webhook payloads.
  */
-
-export enum GitHubEventType {
-    ISSUES = "issues",
-    PUSH = "push",
-    PULL_REQUEST = "pull_request",
-}
 
 export interface GitHubIssue {
     id: number;
     title: string;
+    body: string | null;
 }
 
 export interface GitHubCommit {
@@ -21,9 +16,12 @@ export interface GitHubCommit {
 export interface GitHubPullRequest {
     id: number;
     title: string;
+    merged: boolean;
+    body: string | null;
 }
 
 export interface GitHubRepository {
+    id: number;
     name: string;
 }
 
@@ -31,7 +29,7 @@ export interface GitHubIssuePayload {
     action: string;
     assignees:{
         login: string;
-    }
+    };
     issue: GitHubIssue;
     description: string;
     repository: GitHubRepository;
@@ -42,14 +40,12 @@ export interface GitHubPushPayload {
     ref: string;
     commits: GitHubCommit[];
     repository: GitHubRepository;
-    issue?: GitHubIssue;
 }
 
 export interface GitHubPullRequestPayload {
     action: string;
     pull_request: GitHubPullRequest;
     repository: GitHubRepository;
-    issue?: GitHubIssue;
 }
 
 export type GitHubPayload = GitHubPushPayload | GitHubIssuePayload | GitHubPullRequestPayload

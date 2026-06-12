@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { handleGitLabWebhook } from "../controllers/gitlab.controller";
+import { handleGitLabWebhook } from "../controllers/github.controller";
 
 const router = Router();
 
