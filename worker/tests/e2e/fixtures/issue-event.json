@@ -1,14 +1,19 @@
 {
-    "source": "gitlab",
-    "eventType": "issue-assigned",
-    "clickUpTaskId": 101,
-    "projectId": 1,
-    "projectName": "GitLab ClickUp Sync",
-    "author": "Ella",
-    "gitlabObjectId": 1001,
-    "title": "Implement Login",
-    "description": "Create login page",
-    "url": "https://gitlab.com/example/issues/1001"
+    "type": "issue.assigned",
+    "payload": {
+      "action":"assigned",
+      "issue":{
+        "id": 123,
+        "title": "[#123] Implement Login"
+      },
+      "repository": {
+        "id": 1,
+        "name": "github-clickup-sync"
+      },
+      "assignee":{
+        "login":"Ella"
+      }
+    }
   } 
 
   

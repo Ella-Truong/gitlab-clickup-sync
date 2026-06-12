@@ -1,11 +1,15 @@
 {
-    "source": "gitlab",
-    "eventType": "merge-request",
-    "clickUpTaskId": 101,
-    "projectId": 1,
-    "projectName": "GitLab ClickUp Sync",
-    "author": "Ella",
-    "gitlabObjectId": 5001,
-    "title": "Feature Login",
-    "mergeRequestState": "opened"
-  }
+    "type": "pull_request.opened",
+    "payload": {
+      "action": "opened",
+      "pull_request": {
+        "id": 208,
+        "title": "#123 Open Login PR",
+        "merged": false
+      }
+    },
+    "repository": {
+      "id": 1,
+      "name": "github-clickup-sync"
+    }
+}

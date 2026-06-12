@@ -17,7 +17,8 @@ export interface GitHubPullRequest {
     id: number;
     title: string;
     merged: boolean;
-    body: string | null;
+    body?: string | null;
+    repository: GitHubRepository;
 }
 
 export interface GitHubRepository {
