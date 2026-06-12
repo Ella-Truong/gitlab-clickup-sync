@@ -5,7 +5,7 @@
  */
 import amqp from "amqplib";
 
-const QUEUE_NAME = "gitlab-events";
+const QUEUE_NAME = "github-events";
 
 let channel: amqp.Channel;
 

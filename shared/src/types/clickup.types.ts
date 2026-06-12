@@ -11,3 +11,10 @@ export interface ClickUpTask {
 export interface ClickUpTaskListResponse {
     tasks: ClickUpTask[];
 }
+
+export interface CreateClickUpTaskInput {
+    title: string;
+    description?: string;
+    assignee?: string;
+    createdAt: string;
+}

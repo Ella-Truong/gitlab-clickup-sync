@@ -5,7 +5,8 @@
 export interface GitHubIssue {
     id: number;
     title: string;
-    body: string | null;
+    body: string;
+    createdAt: string;
 }
 
 export interface GitHubCommit {

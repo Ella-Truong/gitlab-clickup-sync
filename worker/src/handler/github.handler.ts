@@ -25,7 +25,7 @@ import {
 
 import {extractIssueId} from "../../utils/extractIssueId";
 
-export async function handleGitLabEvent(event: GitHubEvent): Promise<void>{
+export async function handleGitHubEvent(event: GitHubEvent): Promise<void>{
     switch (event.type) {
         case GitHubEventType.ISSUE_ASSIGNED:
             await handleIssueAssigned(event);
@@ -63,10 +63,13 @@ async function handleIssueAssigned(
     if(!("issue" in event.payload)){
         return;
     }
-
-    await createClickUpTask(
-        event.payload.issue.title,
-    )
+    
+    await createClickUpTask({
+        title: event.payload.issue.title,
+        description: event.payload.issue.body,
+        assignee: event.payload.assignees.login,
+        createdAt: event.payload.issue.createdAt,
+    });  
 }
 
 async function handlePushReceived(
