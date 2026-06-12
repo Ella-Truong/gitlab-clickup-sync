@@ -51,6 +51,9 @@ export async function createClickUpTask(
     return task.id;
 }
 
+/** 
+ * Find a task by ID -> return a task
+*/
 export async function findTaskById(
     issueId: number
 ): Promise<ClickUpTask | null>{

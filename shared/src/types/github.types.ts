@@ -5,8 +5,6 @@
 export interface GitHubIssue {
     id: number;
     title: string;
-    body: string;
-    createdAt: string;
 }
 
 export interface GitHubCommit {
@@ -19,7 +17,6 @@ export interface GitHubPullRequest {
     title: string;
     merged: boolean;
     body?: string | null;
-    repository: GitHubRepository;
 }
 
 export interface GitHubRepository {
@@ -33,7 +30,8 @@ export interface GitHubIssuePayload {
         login: string;
     };
     issue: GitHubIssue;
-    description: string;
+    body: string;
+    createdAt: string;
     repository: GitHubRepository;
 }
 

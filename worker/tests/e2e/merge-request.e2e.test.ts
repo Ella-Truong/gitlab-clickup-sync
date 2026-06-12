@@ -1,17 +1,19 @@
 import { describe, it, expect, beforeEach } from "@jest/globals";
-import type { GitLabEvent } from "../../../shared/src/types/event.types";
+import type { GitHubEvent } from "../../../shared/src/types/event.types";
 
 import "../setup/mock-clickup";
 
-import { handleGitLabEvent } from "../../src/handler/gitlab.handler";
+import { handleGitHubEvent } from "../../src/handler/github.handler";
 
-import mergeRequestEvent from "./fixtures/mr-event.json";
+import mergeRequestEvent from "./fixtures/pr-event-merged.json";
+import openRequestEvent from "./fixtures/pr-event-opened.json";
 
 import {
     mockMoveTaskToTesting,
     mockMoveTaskToDone,
     resetClickUpMocks,
 } from "../setup/mock-clickup";
+import { GitHubPullRequestPayload } from "../../../shared/src/types/github.types";
 
 describe("Merge Request Hook E2E", () => {
 
@@ -21,8 +23,8 @@ describe("Merge Request Hook E2E", () => {
 
     it("should move task to Testing when merge request is opened", async () => {
 
-        await handleGitLabEvent(
-            mergeRequestEvent as GitLabEvent
+        await handleGitHubEvent(
+            mergeRequestEvent as GitHubPullRequestPayload;
         );
 
         expect(mockMoveTaskToTesting)
@@ -36,12 +38,12 @@ describe("Merge Request Hook E2E", () => {
 
     it("should move task to Done when merge request is merged", async () => {
 
-        const mergedEvent: GitLabEvent = {
-            ...(mergeRequestEvent as GitLabEvent),
+        const mergedEvent: GitHubEvent = {
+            ...(mergeRequestEvent as GitHubEvent),
             mergeRequestState: "merged",
         };
 
-        await handleGitLabEvent(mergedEvent);
+        await handleGitHubEvent(mergedEvent);
 
         expect(mockMoveTaskToDone)
             .toHaveBeenCalledTimes(1);

@@ -10,7 +10,7 @@
  */
 import "../setup/mock-clickup";
 import { describe, it, expect, beforeEach} from "@jest/globals";
-import { handleGitLabEvent} from "../../src/handler/gitlab.handler";
+import { handleGitHubEvent} from "../../src/handler/github.handler";
 import issueEvent from "./fixtures/issue-event.json";
 
 import {
@@ -18,7 +18,8 @@ import {
     resetClickUpMocks,
 } from "../setup/mock-clickup";
 
-import { GitLabEvent } from "../../../shared/src/types/event.types";
+import { GitHubEvent } from "../../../shared/src/types/event.types";
+import { GitHubIssuePayload } from "../../../shared/src/types/github.types";
 
 describe("Issue Hook E2E", () => {
     beforeEach(() => {
@@ -26,13 +27,13 @@ describe("Issue Hook E2E", () => {
     })
 
     it("should create a ClickUp task when an issue is assigned", async () => {
-        await handleGitLabEvent(issueEvent as GitLabEvent);
+        await handleGitHubEvent(issueEvent as GitHubEvent);
         expect(mockCreateClickUpTask)
     })
 
     it("should pass the event payload to createClickUpTask", async () => {
-        await handleGitLabEvent(issueEvent as GitLabEvent);
+        await handleGitHubEvent(issueEvent as GitHubEvent);
 
-        expect(mockCreateClickUpTask).toHaveBeenCalledWith(issueEvent as GitLabEvent)
+        expect(mockCreateClickUpTask).toHaveBeenCalledWith(issueEvent as GitHubEvent)
     })
 })

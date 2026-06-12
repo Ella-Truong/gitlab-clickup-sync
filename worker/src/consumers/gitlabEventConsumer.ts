@@ -6,7 +6,7 @@
  */
 
 import { connectRabbitMQ } from "../services/rabbitmq";
-import { handleGitLabEvent } from "../handler/github.handler";
+import { handleGitHubEvent } from "../handler/github.handler";
 
 const QUEUE_NAME = "gitlab-events";
 
@@ -45,7 +45,7 @@ export async function startConsumer(){
             console.log(`Received ${payload.eventType} event from ${payload.projectName}`)
 
             //process business logic
-            await handleGitLabEvent(payload)
+            await handleGitHubEvent(payload)
 
             console.log(`Successfully processed ${payload.eventType} event`)
             

@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, jest } from "@jest/globals";
 
 import "../setup/mock-clickup";
 
-import { handleGitLabEvent } from "../../src/handler/gitlab.handler";
+import { handleGitHubEvent } from "../../src/handler/github.handler";
 
 import {
     mockCreateClickUpTask,
@@ -34,7 +34,7 @@ describe("Unsupported Event E2E", () => {
             author: "Ella",
         };
 
-        await handleGitLabEvent(
+        await handleGitHubEvent(
             unsupportedEvent as any
         );
 

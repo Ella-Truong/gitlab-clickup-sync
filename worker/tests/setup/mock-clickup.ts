@@ -35,7 +35,7 @@
  */
 
 import { jest } from "@jest/globals";
-import { GitLabEvent } from "../../../shared/src/types/event.types";
+import { GitHubEvent } from "../../../shared/src/types/event.types";
 
 /**
  * Fake functions used to replace the real ClickUp service methods.
@@ -50,7 +50,7 @@ import { GitLabEvent } from "../../../shared/src/types/event.types";
  * expect(mockMoveTaskToReview).toHaveBeenCalledWith(101);
  */
 
-export const mockCreateClickUpTask = jest.fn<(event: GitLabEvent) => Promise<void>>();
+export const mockCreateClickUpTask = jest.fn<(event: GitHubEvent) => Promise<void>>();
 export const mockMoveTaskToReview = jest.fn();
 export const mockMoveTaskToInProgress = jest.fn();
 export const mockMoveTaskToTesting = jest.fn();

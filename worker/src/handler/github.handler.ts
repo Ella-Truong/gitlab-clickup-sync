@@ -49,13 +49,9 @@ export async function handleGitHubEvent(event: GitHubEvent): Promise<void>{
     }
 }
 
-
 /**
- * Business rules for push events:
- * First commit -> Review
- * Third commit -> In Progress
+ * Creating the task on ClickUp
  */
-
 
 async function handleIssueAssigned(
     event: GitHubEvent
@@ -66,11 +62,17 @@ async function handleIssueAssigned(
     
     await createClickUpTask({
         title: event.payload.issue.title,
-        description: event.payload.issue.body,
+        description: event.payload.body,
         assignee: event.payload.assignees.login,
-        createdAt: event.payload.issue.createdAt,
+        createdAt: event.payload.createdAt,
     });  
 }
+
+/**
+ * Business rules for push events:
+ * First commit -> Review
+ * Third commit -> In Progress
+ */
 
 async function handlePushReceived(
     event: GitHubEvent
@@ -78,7 +80,7 @@ async function handlePushReceived(
     if(!("commits" in event.payload)){
         return;
     }
-
+    
     for (const commit of event.payload.commits){
         const issueId = extractIssueId(commit.message);
         if (!issueId) continue;
@@ -97,12 +99,10 @@ async function handlePushReceived(
     
 }
 
-
-
 /**
- * Business rules for merge request
- * MR opend -> Tesing
- * MR is merged -> Done
+ * Business rules for pull requests
+ * PR opend -> Tesing
+ * PR is merged -> Done
  */
 async function handlePullRequestOpened (
     event: GitHubEvent,
