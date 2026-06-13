@@ -1,6 +1,10 @@
 /**
- * Extract webhook event type from incoming request
+ * Handles incoming GitHub webhook requests.
+ *
+ * Extracts the GitHub event type from the request header
+ * and delegates processing to the GitHub service.
  */
+
 import { Request, Response } from "express";
 import { processWebhook } from "../services/github.service";
 
