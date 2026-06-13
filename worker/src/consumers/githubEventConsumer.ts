@@ -8,7 +8,7 @@
 import { connectRabbitMQ } from "../services/rabbitmq";
 import { handleGitHubEvent } from "../handler/github.handler";
 
-const QUEUE_NAME = "gitlab-events";
+const QUEUE_NAME = "github-events";
 
 export async function startConsumer(){
     //start a connection with RabbitMQ

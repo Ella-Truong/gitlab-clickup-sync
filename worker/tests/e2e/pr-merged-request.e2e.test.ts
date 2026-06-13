@@ -1,7 +1,8 @@
+import { describe, it, expect, beforeEach } from "@jest/globals";
+
 import "../setup/mock-clickup";
 import "../setup/mock-redis";
 
-import { describe, it, expect, beforeEach } from "@jest/globals";
 import mergedRequestEvent from "./fixtures/pr-event-merged.json";
 import { handleGitHubEvent } from "../../src/handler/github.handler";
 
@@ -19,7 +20,7 @@ describe("Pull Request Merged Hook E2E", () => {
         resetClickUpMocks();
         mockFindTaskById.mockResolvedValue({
             id: "task-123",
-            name: "#101 Test Task"
+            name: "[#123] Test Task"
         })
     });
 
@@ -28,16 +29,12 @@ describe("Pull Request Merged Hook E2E", () => {
             mergedRequestEvent as GitHubEvent
         );
 
-        expect(mockMoveTaskToDone)
-            .toHaveBeenCalledTimes(1);
+        expect(mockMoveTaskToDone).toHaveBeenCalledTimes(1);
         
-        expect(mockMoveTaskToDone)
-            .toHaveBeenCalledWith("task-123");
+        expect(mockMoveTaskToDone).toHaveBeenCalledWith("task-123");
         
-        expect(mockResetCommitCount)
-            .toHaveBeenCalledTimes(1);
+        expect(mockResetCommitCount).toHaveBeenCalledTimes(1);
         
-        expect(mockResetCommitCount)
-            .toHaveBeenCalledWith(101);
+        expect(mockResetCommitCount).toHaveBeenCalledWith(123);
     });
 });

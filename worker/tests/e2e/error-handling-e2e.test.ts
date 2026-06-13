@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach } from "@jest/globals";
-import type { GitLabEvent } from "../../../shared/src/types/event.types";
+import type { GitHubEvent } from "../../../shared/src/types/event.types";
 
 import "../setup/mock-clickup";
 
-import { handleGitLabEvent } from "../../src/handler/gitlab.handler";
+import { handleGitHubEvent } from "../../src/handler/github.handler";
 
 import issueEvent from "./fixtures/issue-event.json";
 
@@ -25,8 +25,8 @@ describe("Error Handling E2E", () => {
         );
 
         await expect(
-            handleGitLabEvent(
-                issueEvent as GitLabEvent
+            handleGitHubEvent(
+                issueEvent as GitHubEvent
             )
         ).rejects.toThrow("ClickUp API Error");
     });
