@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { handleGitLabWebhook } from "../controllers/gitlab.controller";
+import { handleGitHubWebhook } from "../controllers/github.controller";
 
 const router = Router();
 
 //If a POST request is sent to /gitlab, then handleGitLabWebhook() is executed
-router.post("/gitlab", handleGitLabWebhook);
+router.post("/gitlab", handleGitHubWebhook);
 
 export default router;

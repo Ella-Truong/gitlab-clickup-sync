@@ -1,9 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll } from "@jest/globals";
-
-import "../setup/mock-clickup";
+import { startConsumer } from "../../src/consumers/githubEventConsumer";
 import issueEvent from "./fixtures/issue-event.json";
-
-import { startConsumer } from "../../src/consumers/gitlabEventConsumer";
 
 import {
     setupRabbitMQ,
@@ -11,11 +8,15 @@ import {
     cleanupRabbitMQ,
 } from "../setup/test-rabbitmq";
 
-import {
-    mockCreateClickUpTask,
-} from "../setup/mock-clickup";
+jest.mock("../../src/handler/github.handler", () => ({
+    handleGitHubEvent: jest.fn()
+}))
+import { handleGitHubEvent } from "../../src/handler/github.handler";
+import { GitHubEvent } from "../../../shared/src/types/event.types";
 
-describe("Consumer E2E", () => {
+const mockHandleGitHubEvent = handleGitHubEvent as jest.Mock;
+
+describe("GitHub Event Consumer E2E", () => {
 
     beforeAll(async () => {
         await setupRabbitMQ();
@@ -27,16 +28,15 @@ describe("Consumer E2E", () => {
         await cleanupRabbitMQ();
     });
 
-    it("should consume RabbitMQ messages and create ClickUp tasks", async () => {
+    it("should consume GitHub event from RabbitMQ", async () => {
 
         await publishMessage(issueEvent);
 
         await new Promise(resolve =>
-            setTimeout(resolve, 1000)
+            setTimeout(resolve, 500)
         );
 
-        expect(mockCreateClickUpTask)
-            .toHaveBeenCalledTimes(1);
+        expect(mockHandleGitHubEvent).toHaveBeenCalledTimes(1);
+        expect(mockHandleGitHubEvent).toHaveBeenCalledWith(issueEvent);
     });
-
 });

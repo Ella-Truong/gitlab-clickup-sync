@@ -1,9 +1,17 @@
 {
-    "source": "gitlab",
-    "eventType": "push",
-    "clickUpTaskId": 101,
-    "projectId": 1,
-    "projectName": "GitLab ClickUp Sync",
-    "author": "Ella",
-    "commitCount": 1
+  "type": "push.received",
+  "payload": {
+    "action": "push",
+    "ref": "refs/heads/main",
+    "commits": [
+      {
+        "id": "abc123",
+        "message": "#123 Add Login controller"
+      }
+    ],
+    "repository": {
+      "id": 1,
+      "name": "github-clickup-sync"
+    }
   }
+}

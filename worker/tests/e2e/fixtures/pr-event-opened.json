@@ -1,0 +1,15 @@
+{
+    "type": "pull_request.opened",
+    "payload": {
+      "action": "opened",
+      "pull_request": {
+        "id": 208,
+        "title": "#123 Open Login PR",
+        "merged": false
+      },
+      "repository": {
+        "id": 1,
+        "name": "github-clickup-sync"
+      }
+    }
+}

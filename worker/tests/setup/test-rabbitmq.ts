@@ -1,7 +1,7 @@
 import { Channel, Connection } from "amqplib";
 import { connectRabbitMQ } from "../../src/services/rabbitmq";
 
-const QUEUE_NAME = "gitlab-events";
+const QUEUE_NAME = "github-events";
 
 let connection: Awaited<ReturnType<typeof connectRabbitMQ>>
 let channel: Channel;

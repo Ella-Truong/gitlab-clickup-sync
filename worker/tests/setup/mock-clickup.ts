@@ -35,8 +35,7 @@
  */
 
 import { jest } from "@jest/globals";
-import { GitLabEvent } from "../../../shared/src/types/event.types";
-
+import { ClickUpTask, CreateClickUpTaskInput } from "../../../shared/src/types/clickup.types";
 /**
  * Fake functions used to replace the real ClickUp service methods.
  *
@@ -50,11 +49,13 @@ import { GitLabEvent } from "../../../shared/src/types/event.types";
  * expect(mockMoveTaskToReview).toHaveBeenCalledWith(101);
  */
 
-export const mockCreateClickUpTask = jest.fn<(event: GitLabEvent) => Promise<void>>();
+export const mockCreateClickUpTask = jest.fn<(input: CreateClickUpTaskInput) => Promise<string>>();
 export const mockMoveTaskToReview = jest.fn();
 export const mockMoveTaskToInProgress = jest.fn();
 export const mockMoveTaskToTesting = jest.fn();
 export const mockMoveTaskToDone = jest.fn();
+
+export const mockFindTaskById = jest.fn<() => Promise<ClickUpTask | null>>();
 
 /**
  * Reset all mock call history before each test.
@@ -70,11 +71,7 @@ export const mockMoveTaskToDone = jest.fn();
  * This ensures every test starts with a clean state.
  */
 export function resetClickUpMocks(): void {
-    mockCreateClickUpTask.mockClear();
-    mockMoveTaskToReview.mockClear();
-    mockMoveTaskToInProgress.mockClear();
-    mockMoveTaskToTesting.mockClear();
-    mockMoveTaskToDone.mockClear();
+    jest.clearAllMocks();
 }
 
 /**
@@ -107,4 +104,5 @@ jest.mock("../../src/services/clickup.service", () => ({
     moveTaskToInProgress: mockMoveTaskToInProgress,
     moveTaskToTesting: mockMoveTaskToTesting,
     moveTaskToDone: mockMoveTaskToDone,
+    findTaskById: mockFindTaskById,
 }));

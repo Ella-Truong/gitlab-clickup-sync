@@ -1,16 +1,19 @@
 import { describe, it, expect, beforeEach } from "@jest/globals";
-import type { GitLabEvent } from "../../../shared/src/types/event.types";
 
 import "../setup/mock-clickup";
+import "../setup/mock-redis";
 
-import { handleGitLabEvent } from "../../src/handler/gitlab.handler";
+import type { GitHubEvent } from "../../../shared/src/types/event.types";
+import { handleGitHubEvent } from "../../src/handler/github.handler";
 
 import issueEvent from "./fixtures/issue-event.json";
 import pushEvent from "./fixtures/push-event.json";
-import mergeRequestEvent from "./fixtures/mr-event.json";
+import mergeRequestEvent from "./fixtures/pr-event-merged.json";
+import openRequestEvent from "./fixtures/pr-event-opened.json";
 
 import {
     mockCreateClickUpTask,
+    mockFindTaskById,
     mockMoveTaskToReview,
     mockMoveTaskToInProgress,
     mockMoveTaskToTesting,
@@ -18,59 +21,47 @@ import {
     resetClickUpMocks,
 } from "../setup/mock-clickup";
 
+import {
+    mockIncrementCommitCount,
+    mockResetCommitCount,
+} from "../setup/mock-redis";
+
+
 describe("GitLab to ClickUp Workflow E2E", () => {
 
     beforeEach(() => {
         resetClickUpMocks();
+        mockFindTaskById.mockResolvedValue({
+            id: "task-123",
+            name: "[#123] Test Task"
+        })
     });
 
     it("should process the complete GitLab to ClickUp workflow", async () => {
 
         // Issue Assigned -> Create Task
-        await handleGitLabEvent(
-            issueEvent as GitLabEvent
-        );
+        await handleGitHubEvent(issueEvent as GitHubEvent);
+        expect(mockCreateClickUpTask).toHaveBeenCalledTimes(1);
 
-        expect(mockCreateClickUpTask)
-            .toHaveBeenCalledTimes(1);
-
-        // First Commit -> Review
-        await handleGitLabEvent(
-            pushEvent as GitLabEvent
-        );
-
-        expect(mockMoveTaskToReview)
-            .toHaveBeenCalledTimes(1);
+        //first commit -> review
+        mockIncrementCommitCount.mockResolvedValueOnce(1);
+        await handleGitHubEvent(pushEvent as GitHubEvent);
+        expect(mockMoveTaskToReview).toHaveBeenCalledTimes(1);
 
         // Third Commit -> In Progress
-        const thirdCommitEvent: GitLabEvent = {
-            ...(pushEvent as GitLabEvent),
-            commitCount: 3,
-        };
+        mockIncrementCommitCount.mockResolvedValueOnce(3);
+        await handleGitHubEvent(pushEvent as GitHubEvent);
+        expect(mockMoveTaskToInProgress).toHaveBeenCalledWith("task-123");
 
-        await handleGitLabEvent(thirdCommitEvent);
+        // PR Opened -> Testing
+        await handleGitHubEvent(openRequestEvent as GitHubEvent);
+        expect(mockMoveTaskToTesting).toHaveBeenCalledWith("task-123");
 
-        expect(mockMoveTaskToInProgress)
-            .toHaveBeenCalledTimes(1);
+        // PR Merged -> Done
+        await handleGitHubEvent(mergeRequestEvent as GitHubEvent);
+        expect(mockMoveTaskToDone).toHaveBeenCalledWith("task-123");
+        expect(mockResetCommitCount).toHaveBeenCalledWith(123);
 
-        // MR Opened -> Testing
-        await handleGitLabEvent(
-            mergeRequestEvent as GitLabEvent
-        );
-
-        expect(mockMoveTaskToTesting)
-            .toHaveBeenCalledTimes(1);
-
-        // MR Merged -> Done
-        const mergedEvent: GitLabEvent = {
-            ...(mergeRequestEvent as GitLabEvent),
-            mergeRequestState: "merged",
-        };
-
-        await handleGitLabEvent(mergedEvent);
-
-        expect(mockMoveTaskToDone)
-            .toHaveBeenCalledTimes(1);
     });
 
 });

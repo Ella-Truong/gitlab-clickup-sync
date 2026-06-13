@@ -1,8 +1,7 @@
 import { describe, it, expect, beforeEach, jest } from "@jest/globals";
-
 import "../setup/mock-clickup";
-
-import { handleGitLabEvent } from "../../src/handler/gitlab.handler";
+import unsupportedEvent from "./fixtures/unsupported-event.json";
+import { handleGitHubEvent } from "../../src/handler/github.handler";
 
 import {
     mockCreateClickUpTask,
@@ -25,16 +24,7 @@ describe("Unsupported Event E2E", () => {
             .spyOn(console, "warn")
             .mockImplementation(() => {});
 
-        const unsupportedEvent = {
-            source: "gitlab",
-            eventType: "unknown-event",
-            clickUpTaskId: 101,
-            projectId: 1,
-            projectName: "Test Project",
-            author: "Ella",
-        };
-
-        await handleGitLabEvent(
+        await handleGitHubEvent(
             unsupportedEvent as any
         );
 
