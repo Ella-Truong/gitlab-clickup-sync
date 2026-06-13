@@ -1,5 +1,5 @@
 /**
- * Extract issue Id from text -> return a number 
+ * Extract issue Id from text title -> return a number 
  * 
  * [#123] Implemement RabbitMQ Worker --> 123
  * #123 Add RabbitMQ publisher --> 123

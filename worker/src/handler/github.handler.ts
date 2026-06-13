@@ -4,6 +4,7 @@
  * Business rules
  * Workflow decisions
 */
+
 import { 
     GitHubEventType,
     GitHubEvent 
@@ -25,6 +26,17 @@ import {
 
 import {extractIssueId} from "../../utils/extractIssueId";
 
+
+
+/**
+ * Routes GitHub events to their corresponding handlers.
+ *
+ * Each GitHubEvent contains:
+ * - a type identifying the GitHub event
+ * - a payload containing event-specific data
+ *
+ * Different event types are processed by different handlers.
+ */
 export async function handleGitHubEvent(event: GitHubEvent): Promise<void>{
     switch (event.type) {
         case GitHubEventType.ISSUE_ASSIGNED:
@@ -49,10 +61,18 @@ export async function handleGitHubEvent(event: GitHubEvent): Promise<void>{
     }
 }
 
-/**
- * Creating the task on ClickUp
- */
 
+
+/**
+ * Handles GitHub issue assignment events.
+ *
+ * When an issue is assigned, a corresponding task is created in ClickUp.
+ *
+ * Validation:
+ * - Ignore payloads that do not contain issue data.
+ *
+ * Uses the ClickUp service to create the task.
+ */
 async function handleIssueAssigned(
     event: GitHubEvent
 ): Promise<void>{
@@ -60,6 +80,7 @@ async function handleIssueAssigned(
         return;
     }
     
+    //use the service of creating task of ClickUp
     await createClickUpTask({
         title: event.payload.issue.title,
         description: event.payload.body,
@@ -68,12 +89,22 @@ async function handleIssueAssigned(
     });  
 }
 
-/**
- * Business rules for push events:
- * First commit -> Review
- * Third commit -> In Progress
- */
 
+
+/**
+ * Handles GitHub push events.
+ *
+ * Validation:
+ * - Ignore payloads without commits.
+ * - Ignore commits that do not reference an issue ID.
+ * - Ignore issues that cannot be mapped to a ClickUp task.
+ *
+ * Workflow:
+ * - 1st commit  -> move task to Review
+ * - 3rd commit  -> move task to In Progress
+ *
+ * Commit counts are tracked in Redis.
+ */
 async function handlePushReceived(
     event: GitHubEvent
 ): Promise<void>{
@@ -82,12 +113,13 @@ async function handlePushReceived(
     }
     
     for (const commit of event.payload.commits){
-        const issueId = extractIssueId(commit.message);
+        const issueId = extractIssueId(commit.message);  //return ID task (number)
         if (!issueId) continue;
 
-        const task = await findTaskById(issueId);
+        const task = await findTaskById(issueId);   //use returned ID to find that task (ClickUpTask type)
         if (!task) continue;
 
+        //use Redis services
         const commitCount = await incrementCommitCount(issueId);
         if (commitCount === 1) {
             await moveTaskToReview(task.id);
@@ -99,10 +131,19 @@ async function handlePushReceived(
     
 }
 
+
+
 /**
- * Business rules for pull requests
- * PR opend -> Tesing
- * PR is merged -> Done
+ * Business rules for pull request events:
+ *
+ * - Pull request opened  -> move task to Testing
+ * - Pull request merged  -> move task to Done
+ *
+ * The related ClickUp task is identified by extracting
+ * the issue ID from the pull request title.
+ *
+ * When a pull request is merged, the Redis commit counter
+ * is cleared because the development workflow is complete.
  */
 async function handlePullRequestOpened (
     event: GitHubEvent,
