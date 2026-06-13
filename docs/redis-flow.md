@@ -179,24 +179,13 @@ Example workflow:
   ↓
 To Do
 
-1-2 commits
-  ↓
-In Progress
-
-3+ commits
+1 commits
   ↓
 In Review
-```
 
-Worker logic:
-
-```ts
-if (count >= 3) {
-  await clickup.updateTaskStatus(
-    taskId,
-    "In Review"
-  );
-}
+3 commits
+  ↓
+In Progress
 ```
 
 ---
