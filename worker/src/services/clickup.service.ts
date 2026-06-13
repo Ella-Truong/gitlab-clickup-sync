@@ -9,11 +9,11 @@ import {
     ClickUpTaskListResponse,
     CreateClickUpTaskInput,
 } from "../../../shared/src/types/clickup.types";
-import { GitHubIssue, GitHubIssuePayload } from "../../../shared/src/types/github.types";
 
-/**
- * Create a new ClickUp task when a GitLab issue is assigned
- */
+
+/**---------------- Services --------------- */
+
+/*Create a new ClickUp task when a GitLab issue is assigned*/
 export async function createClickUpTask(
     input: CreateClickUpTaskInput
 ): Promise<string>{
