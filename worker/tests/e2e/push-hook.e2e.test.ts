@@ -1,49 +1,57 @@
-import { describe, it, expect, beforeEach } from "@jest/globals";
-import type { GitLabEvent } from "../../../shared/src/types/event.types";
-
 import "../setup/mock-clickup";
+import "../setup/mock-redis";
 
-import { handleGitLabEvent } from "../../src/handler/gitlab.handler";
-
+import { describe, it, expect, beforeEach } from "@jest/globals";
 import pushEvent from "./fixtures/push-event.json";
+import type { GitHubEvent } from "../../../shared/src/types/event.types";
+
+import { handleGitHubEvent } from "../../src/handler/github.handler";
 
 import {
     mockMoveTaskToReview,
     mockMoveTaskToInProgress,
     resetClickUpMocks,
+    mockFindTaskById,
 } from "../setup/mock-clickup";
 
-describe("Push Hook E2E", () => {
+import { mockIncrementCommitCount } from "../setup/mock-redis";
 
+describe("Push Hook E2E", () => {
     beforeEach(() => {
         resetClickUpMocks();
     });
 
     it("should move task to Review on first commit", async () => {
+        mockFindTaskById.mockResolvedValue({
+            id: "task-123",
+            name: "Test Task"
+        });
 
-        await handleGitLabEvent(pushEvent as GitLabEvent);
+        mockIncrementCommitCount.mockResolvedValue(1);
+
+        await handleGitHubEvent(pushEvent as GitHubEvent);
 
         expect(mockMoveTaskToReview)
             .toHaveBeenCalledTimes(1);
 
         expect(mockMoveTaskToReview)
-            .toHaveBeenCalledWith(pushEvent.clickUpTaskId);
+            .toHaveBeenCalledWith("task-123");
     });
 
     it("should move task to In Progress on third commit", async () => {
+        mockFindTaskById.mockResolvedValue({
+            id: "task-123",
+            name: "Test Task",
+        })
 
-        const thirdCommitEvent: GitLabEvent = {
-            ...(pushEvent as GitLabEvent),
-            commitCount: 3,
-        };
+        mockIncrementCommitCount.mockResolvedValue(3);
 
-        await handleGitLabEvent(thirdCommitEvent);
+        await handleGitHubEvent(pushEvent as GitHubEvent);
 
         expect(mockMoveTaskToInProgress)
             .toHaveBeenCalledTimes(1);
 
         expect(mockMoveTaskToInProgress)
-            .toHaveBeenCalledWith(thirdCommitEvent.clickUpTaskId);
+            .toHaveBeenCalledWith("task-123");
     });
-
 });

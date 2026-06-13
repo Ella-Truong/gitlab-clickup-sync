@@ -1,7 +1,7 @@
 //start the worker
 import dotenv from "dotenv";
 import express from "express";
-import { startConsumer } from "./consumers/gitlabEventConsumer";
+import { startConsumer } from "./consumers/githubEventConsumer";
 
 dotenv.config();
 const app = express();

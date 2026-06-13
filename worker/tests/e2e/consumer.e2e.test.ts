@@ -3,7 +3,7 @@ import { describe, it, expect, beforeAll, afterAll } from "@jest/globals";
 import "../setup/mock-clickup";
 import issueEvent from "./fixtures/issue-event.json";
 
-import { startConsumer } from "../../src/consumers/gitlabEventConsumer";
+import { startConsumer } from "../../src/consumers/githubEventConsumer";
 
 import {
     setupRabbitMQ,

@@ -6,7 +6,7 @@
         "id": 123,
         "title": "[#123] Implement Login"
       },
-      "assignee":{
+      "assignees":{
         "login":"Ella"
       },
       "body":"Test GitHub webhook integration with ClickUp sync",
