@@ -1,4 +1,8 @@
-import { Channel, Connection } from "amqplib";
+/**
+ * This is a test helper
+ * Provide three single tests 
+ */
+import { Channel } from "amqplib";
 import { connectRabbitMQ } from "../../src/config/rabbitmq"
 
 const QUEUE_NAME = "github-events";
