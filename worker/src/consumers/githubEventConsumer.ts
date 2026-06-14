@@ -5,7 +5,7 @@
  * This function doesn't return anything, just waiting for the setup to complete
  */
 
-import { connectRabbitMQ } from "../services/rabbitmq";
+import { connectRabbitMQ } from "../config/rabbitmq";
 import { handleGitHubEvent } from "../handler/github.handler";
 
 const QUEUE_NAME = "github-events";

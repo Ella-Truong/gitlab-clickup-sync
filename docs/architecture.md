@@ -17,15 +17,20 @@ ClickUp API
 # Project Structure
 
 ```text
-project-root/
+GitLab-ClickUp-Sync/
 │
 ├── docs/
 │   ├── architecture.md
-│   └── test-guidance.md
+│   ├── test-guidance.md
+|   ├── redis-flow.md
+|   ├── test-guidance.md
+|   └── ai-features-roadmap.md
 │
 ├── notes/
 │   ├── system-architecture.md
 │   ├── rabbitmq.md
+|   ├── redis.md
+|   ├── render-deployment.md
 │   └── e2e-testing.md
 │
 ├── shared/
@@ -34,16 +39,27 @@ project-root/
 │   └── tsconfig.json
 │
 ├── webhook-server/
-│   ├── src/
-│   ├── controllers/
-│   ├── routes/
-│   ├── services/
+│   └── src/
+│       ├── controllers/
+│       ├── routes/
+│       ├── services/
+|       ├── app.ts
+|       └── server.ts
 │   ├── package.json
 │   └── tsconfig.json
 │
 ├── worker/
-│   ├── src/
+│   └── src/
+|       ├── config/
+|       ├── consumer/
+|       ├── handler/
+|       ├── services/
+|       ├── app.ts
+|       └── worker.ts
 │   ├── tests/
+|       ├── e2e/
+|       └── setup/
+|   ├── utils/
 │   ├── jest.config.js  
 |   ├── jest.setup.ts
 │   ├── package.json

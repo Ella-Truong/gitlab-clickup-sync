@@ -1,5 +1,5 @@
 import { Channel, Connection } from "amqplib";
-import { connectRabbitMQ } from "../../src/services/rabbitmq";
+import { connectRabbitMQ } from "../../src/config/rabbitmq"
 
 const QUEUE_NAME = "github-events";
 
