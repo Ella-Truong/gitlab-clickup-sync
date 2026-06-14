@@ -8,7 +8,7 @@ export async function incrementCommitCount(
     issueId: number,
 ): Promise<number>{
     return redis.incr(
-        `github:issue${issueId}:commits`,
+        `github:issue:${issueId}:commits`,
     )
 }
 
@@ -20,7 +20,7 @@ export async function getCommitCount(
     issueId: number,
 ): Promise<number>{
     const value = await redis.get(
-        `github:issue${issueId}:commits`
+        `github:issue:${issueId}:commits`
     );
 
     return Number(value ?? 0)
