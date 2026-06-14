@@ -84,7 +84,7 @@ async function handleIssueAssigned(
     await createClickUpTask({
         title: event.payload.issue.title,
         description: event.payload.body,
-        assignee: event.payload.assignees.login,
+        assignee: event.payload.assignee.login,
         createdAt: event.payload.createdAt,
     });  
 }
