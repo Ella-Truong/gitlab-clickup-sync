@@ -28,6 +28,6 @@ describe("Issue Hook E2E", () => {
 
     it("should create a ClickUp task when an issue is assigned", async () => {
         await handleGitHubEvent(issueEvent as GitHubEvent);
-        expect(mockCreateClickUpTask);
+        expect(mockCreateClickUpTask).toHaveBeenCalled();
     })
 })

@@ -5,18 +5,18 @@
  * Replace the real ClickUp service during tests.
  *
  * Production Flow:
- * GitLab Event
+ * GitHub Event
  *      ↓
- * handleGitLabEvent()
+ * handleGitHubEvent()
  *      ↓
  * Real ClickUp Service
  *      ↓
  * Real ClickUp API
  *
  * Test Flow:
- * GitLab Event (fixtures)
+ * GitHub Event (fixtures)
  *      ↓
- * handleGitLabEvent() 
+ * handleGitHubEvent() 
  *      ↓
  * Mock ClickUp Service
  *      ↓
@@ -54,7 +54,6 @@ export const mockMoveTaskToReview = jest.fn();
 export const mockMoveTaskToInProgress = jest.fn();
 export const mockMoveTaskToTesting = jest.fn();
 export const mockMoveTaskToDone = jest.fn();
-
 export const mockFindTaskById = jest.fn<() => Promise<ClickUpTask | null>>();
 
 /**

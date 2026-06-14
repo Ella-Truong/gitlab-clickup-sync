@@ -19,14 +19,13 @@ import { mockIncrementCommitCount } from "../setup/mock-redis";
 describe("Push Hook E2E", () => {
     beforeEach(() => {
         resetClickUpMocks();
-    });
-
-    it("should move task to Review on first commit", async () => {
         mockFindTaskById.mockResolvedValue({
             id: "task-123",
             name: "Test Task"
         });
+    });
 
+    it("should move task to Review on first commit", async () => {
         mockIncrementCommitCount.mockResolvedValue(1);
 
         await handleGitHubEvent(pushEvent as GitHubEvent);

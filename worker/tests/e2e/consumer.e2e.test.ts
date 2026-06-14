@@ -11,6 +11,7 @@ import {
 jest.mock("../../src/handler/github.handler", () => ({
     handleGitHubEvent: jest.fn()
 }))
+
 import { handleGitHubEvent } from "../../src/handler/github.handler";
 
 const mockHandleGitHubEvent = handleGitHubEvent as jest.Mock;
