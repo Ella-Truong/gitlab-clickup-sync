@@ -42,8 +42,8 @@ export async function startConsumer(){
             
             //extract data (msg.content) from the message -> payload
             const payload = JSON.parse(msg.content.toString());
-            
-            console.log(`Received ${payload.type} event from ${payload.payload.projectName}`)
+
+            console.log(`Received ${payload.type} event from ${payload.payload.repository.name}`)
 
             //process business logic
             await handleGitHubEvent(payload)
