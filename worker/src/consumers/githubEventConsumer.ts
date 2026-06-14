@@ -48,7 +48,7 @@ export async function startConsumer(){
             //process business logic
             await handleGitHubEvent(payload)
 
-            console.log(`Successfully processed ${payload.eventType} event`)
+            console.log(`Successfully processed ${payload.type} event`)
             
             //acknowledge the message is successfully handled
             //can remove it from the queue 
