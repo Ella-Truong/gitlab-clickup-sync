@@ -23,6 +23,9 @@ export async function createClickUpTask(
         clickupListId,
     } = getEnv();
 
+    console.log(clickupApiUrl);
+    console.log(clickupListId)
+
     const res = await fetch(
         `${clickupApiUrl}/list/${clickupListId}/task`,
         {

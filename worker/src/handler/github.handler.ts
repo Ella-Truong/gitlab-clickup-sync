@@ -53,7 +53,7 @@ export async function handleGitHubEvent(event: GitHubEvent): Promise<void>{
 
         case GitHubEventType.PULL_REQUEST_MERGED:
             await handlePullRequestMerged(event);
-            break
+            break;
 
         default:
             console.warn(`Unsupported evetn type: ${event.type}`)
