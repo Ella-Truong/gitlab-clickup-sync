@@ -15,6 +15,6 @@ export interface ClickUpTaskListResponse {
 export interface ClickUpTaskInput {
     title: string;
     description: string;
-    assignee?: string[];
+    user: string;
     createdAt: string;
 }
