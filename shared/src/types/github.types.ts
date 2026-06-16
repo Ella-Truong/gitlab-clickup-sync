@@ -26,9 +26,9 @@ export interface GitHubRepository {
 
 export interface GitHubIssuePayload {
     action: string;
-    assignee:{
+    assignees:{
         login: string;
-    };
+    }[];
     issue: GitHubIssue;
     body: string;
     createdAt: string;

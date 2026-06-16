@@ -36,7 +36,7 @@ export async function startConsumer(){
             /**
              * RabbitMQ stores message data as a Buffer
              * Cannot directly read that
-             * Must convert it to text: msg.content.toString()
+             * Must convert it to JSON: msg.content.toString()
              * Convert JSON string into an object
             */
             

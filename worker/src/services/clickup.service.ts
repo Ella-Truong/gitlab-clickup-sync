@@ -33,13 +33,9 @@ export async function createClickUpTask(
             },
             body: JSON.stringify({
                 name: input.title,
-                description: `
-                Assignee: ${input.assignee ?? "Unassigned"}
-                Created At: ${input.createdAt} 
-
-                ${input.description ?? ""}`,
+                markdown_content: input.description ?? "",
                 status: "To Do",
-            }),
+            }), 
         }
     );
     
