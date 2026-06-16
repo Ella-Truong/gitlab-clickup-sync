@@ -39,7 +39,6 @@ export async function createClickUpTask(
                 name: input.title,
                 markdown_content: input.description,
                 status: "To Do",
-                group_assignees: input.assignees,
             }), 
         }
     );
