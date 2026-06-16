@@ -7,7 +7,7 @@ import { getEnv } from "../config/env";
 import { 
     ClickUpTask, 
     ClickUpTaskListResponse,
-    CreateClickUpTaskInput,
+    ClickUpTaskInput,
 } from "../../../shared/src/types/clickup.types";
 
 
@@ -15,13 +15,19 @@ import {
 
 /*Create a new ClickUp task when a GitLab issue is assigned*/
 export async function createClickUpTask(
-    input: CreateClickUpTaskInput
+    input: ClickUpTaskInput
 ): Promise<string>{
     const {
         clickupApiUrl,
         clickupToken,
         clickupListId,
     } = getEnv();
+
+    console.log(JSON.stringify({
+        name: input.title,
+        markdown_content: input.description,
+        status: "To Do",
+    }, null, 2));
 
     const res = await fetch(
         `${clickupApiUrl}/list/${clickupListId}/task`,
@@ -33,7 +39,7 @@ export async function createClickUpTask(
             },
             body: JSON.stringify({
                 name: input.title,
-                description: input.description ?? "",
+                markdown_content: input.description,
                 status: "To Do",
             }), 
         }

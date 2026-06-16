@@ -12,7 +12,7 @@ export interface ClickUpTaskListResponse {
     tasks: ClickUpTask[];
 }
 
-export interface CreateClickUpTaskInput {
+export interface ClickUpTaskInput {
     title: string;
     description: string;
     assignee?: string[];
