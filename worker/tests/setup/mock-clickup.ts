@@ -35,7 +35,7 @@
  */
 
 import { jest } from "@jest/globals";
-import { ClickUpTask, CreateClickUpTaskInput } from "../../../shared/src/types/clickup.types";
+import { ClickUpTask, ClickUpTaskInput } from "../../../shared/src/types/clickup.types";
 /**
  * Fake functions used to replace the real ClickUp service methods.
  *
@@ -49,7 +49,7 @@ import { ClickUpTask, CreateClickUpTaskInput } from "../../../shared/src/types/c
  * expect(mockMoveTaskToReview).toHaveBeenCalledWith(101);
  */
 
-export const mockCreateClickUpTask = jest.fn<(input: CreateClickUpTaskInput) => Promise<string>>();
+export const mockCreateClickUpTask = jest.fn<(input: ClickUpTaskInput) => Promise<string>>();
 export const mockMoveTaskToReview = jest.fn();
 export const mockMoveTaskToInProgress = jest.fn();
 export const mockMoveTaskToTesting = jest.fn();

@@ -11,6 +11,7 @@ import {
     mockCreateClickUpTask,
     resetClickUpMocks,
 } from "../setup/mock-clickup";
+import { GitHubIssuePayload } from "../../../shared/src/types/github.types";
 
 describe("Error Handling E2E", () => {
 

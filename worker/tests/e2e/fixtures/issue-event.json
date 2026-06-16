@@ -4,13 +4,13 @@
       "action":"assigned",
       "issue":{
         "id": 123,
-        "title": "[#123] Implement Login"
+        "title": "[#123] Implement Login",
+        "assignees":[{
+          "login":"Ella"
+         }],
+        "body":"Test GitHub webhook integration with ClickUp sync",
+        "created_at": "2026-06-10T16:37:48Z"
       },
-      "assignees":[{
-        "login":"Ella"
-      }],
-      "body":"Test GitHub webhook integration with ClickUp sync",
-      "createdAt": "2026-06-10T16:37:48Z",
       "repository": {
         "id": 1,
         "name": "github-clickup-sync"
