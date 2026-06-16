@@ -23,11 +23,9 @@ export async function createClickUpTask(
         clickupListId,
     } = getEnv();
 
-    console.log(JSON.stringify({
-        name: input.title,
-        markdown_content: input.description,
-        status: "To Do",
-    }, null, 2));
+    console.log("title:", input.title);
+    console.log("description:", input.description);
+    console.log("input:", input);
 
     const res = await fetch(
         `${clickupApiUrl}/list/${clickupListId}/task`,
