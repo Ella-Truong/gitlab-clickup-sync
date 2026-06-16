@@ -39,7 +39,7 @@ export async function createClickUpTask(
                 name: input.title,
                 markdown_content: input.description,
                 status: "To Do",
-                assignees: input.assignee
+                group_assignees: [input.assignee],
             }), 
         }
     );
