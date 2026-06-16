@@ -83,8 +83,12 @@ async function handleIssueAssigned(
     //use the service of creating task of ClickUp
     await createClickUpTask({
         title: event.payload.issue.title,
-        description: event.payload.body,
-        createdAt: event.payload.created_at,
+        description: event.payload.issue.body,
+        createdAt: event.payload.issue.created_at,
+        assignee: event.payload.issue.assignees.map(
+            assignee => assignee.login
+        )
+
     });  
 }
 

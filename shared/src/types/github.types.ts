@@ -5,6 +5,11 @@
 export interface GitHubIssue {
     id: number;
     title: string;
+    body: string;
+    created_at: string;
+    assignees:{
+        login: string;
+    }[];
 }
 
 export interface GitHubCommit {
@@ -26,12 +31,7 @@ export interface GitHubRepository {
 
 export interface GitHubIssuePayload {
     action: string;
-    assignees:{
-        login: string;
-    }[];
     issue: GitHubIssue;
-    body: string;
-    created_at: string;
     repository: GitHubRepository;
 }
 
