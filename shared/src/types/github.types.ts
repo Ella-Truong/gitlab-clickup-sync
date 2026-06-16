@@ -7,9 +7,11 @@ export interface GitHubIssue {
     title: string;
     body: string;
     created_at: string;
-    user: {
-        login: string;
-    }
+    assignees: [
+        {
+            login: string;
+        }
+    ]
 }
 
 export interface GitHubCommit {

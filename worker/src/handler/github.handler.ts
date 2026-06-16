@@ -85,7 +85,9 @@ async function handleIssueAssigned(
         title: event.payload.issue.title,
         description: event.payload.issue.body,
         createdAt: event.payload.issue.created_at,
-        user: event.payload.issue.user.login
+        assignees: event.payload.issue.assignees.map(
+            assignee => assignee.login
+        )
     });  
 }
 
