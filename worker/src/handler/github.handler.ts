@@ -56,7 +56,7 @@ export async function handleGitHubEvent(event: GitHubEvent): Promise<void>{
             break;
 
         default:
-            console.warn(`Unsupported evetn type: ${event.type}`)
+            console.warn(`Unsupported evetn type: ${event}`)
 
     }
 }
@@ -84,7 +84,7 @@ async function handleIssueAssigned(
     await createClickUpTask({
         title: event.payload.issue.title,
         description: event.payload.body,
-        createdAt: event.payload.createdAt,
+        createdAt: event.payload.created_at,
     });  
 }
 

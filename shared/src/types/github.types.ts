@@ -31,7 +31,7 @@ export interface GitHubIssuePayload {
     }[];
     issue: GitHubIssue;
     body: string;
-    createdAt: string;
+    created_at: string;
     repository: GitHubRepository;
 }
 
