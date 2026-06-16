@@ -88,7 +88,6 @@ async function handleIssueAssigned(
         assignee: event.payload.issue.assignees.map(
             assignee => assignee.login
         )
-
     });  
 }
 
