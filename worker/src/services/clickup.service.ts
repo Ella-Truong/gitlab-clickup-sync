@@ -45,6 +45,9 @@ export async function createClickUpTask(
     );
     
     if (!res.ok) {
+        const errorText = await res.text();
+
+        console.error("ClickUp response:", errorText);
         throw new Error(`ClickUp API error: ${res.status}`);
     }
     
