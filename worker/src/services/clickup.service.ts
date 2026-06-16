@@ -33,7 +33,7 @@ export async function createClickUpTask(
             },
             body: JSON.stringify({
                 name: input.title,
-                markdown_content: input.description ?? "",
+                description: input.description ?? "",
                 status: "To Do",
             }), 
         }
