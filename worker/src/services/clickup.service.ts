@@ -103,7 +103,7 @@ async function updateTaskStatus(
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(
-                status
+                status,
             )
         }
     )
