@@ -79,7 +79,7 @@ async function handleIssueAssigned(
     if(!("issue" in event.payload)){
         return;
     }
-    
+
     //use the service of creating task of ClickUp
     await createClickUpTask({
         title: event.payload.issue.title,
