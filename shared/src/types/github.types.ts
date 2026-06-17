@@ -22,7 +22,6 @@ export interface GitHubCommit {
 export interface GitHubPullRequest {
     id: number;
     title: string;
-    merged: boolean;
     body?: string | null;
 }
 
@@ -38,7 +37,6 @@ export interface GitHubIssuePayload {
 }
 
 export interface GitHubPushPayload {
-    action: string;
     ref: string;
     commits: GitHubCommit[];
     repository: GitHubRepository;

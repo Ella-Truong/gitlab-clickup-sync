@@ -104,10 +104,8 @@ const buildEvent = (
 
     if (
         webhookType === "pull_request" &&
-        "pull_request" in payload &&
         "action" in payload &&
-        payload.action === "closed" &&
-        payload.pull_request.merged === true
+        payload.action === "closed"
     ) {
         return {
             type: GitHubEventType.PULL_REQUEST_MERGED,
