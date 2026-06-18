@@ -6,9 +6,9 @@ import { GitHubPayload } from "./github.types";
 
 export enum GitHubEventType {
     ISSUE_ASSIGNED = "issue.assigned",
-    PUSH_RECEIVED = "push",
+    PUSH = "push",
     PULL_REQUEST_OPENED = "pull_request.opened",
-    PULL_REQUEST_MERGED = "pull_request.closed",
+    PULL_REQUEST_CLOSED = "pull_request.closed",
 }
 
 export interface GitHubEvent {

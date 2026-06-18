@@ -1,12 +1,11 @@
 {
-  "type": "push.received",
+  "type": "push",
   "payload": {
-    "action": "push",
     "ref": "refs/heads/main",
     "commits": [
       {
         "id": "abc123",
-        "message": "#123 Add Login controller"
+        "message": "[#123] Add Login controller"
       }
     ],
     "repository": {

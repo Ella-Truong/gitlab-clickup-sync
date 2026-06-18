@@ -7,27 +7,25 @@ import mergedRequestEvent from "./fixtures/pr-event-merged.json";
 import { handleGitHubEvent } from "../../src/handler/github.handler";
 
 import {
-    mockFindTaskById,
     mockMoveTaskToDone,
     resetClickUpMocks,
 } from "../setup/mock-clickup";
 
-import { mockResetCommitCount } from "../setup/mock-redis";
+import { mockResetCommitCount, mockGetTaskId } from "../setup/mock-redis";
 import { GitHubEvent } from "../../../shared/src/types/event.types";
 
 describe("Pull Request Merged Hook E2E", () => {
     beforeEach(() => {
         resetClickUpMocks();
-        mockFindTaskById.mockResolvedValue({
-            id: "task-123",
-            name: "[#123] Test Task"
-        })
+        mockGetTaskId.mockResolvedValue("task-123");
     });
 
     it("should move task to Testing when pull request is opened", async () => {
         await handleGitHubEvent(
             mergedRequestEvent as GitHubEvent
         );
+
+        expect(mockGetTaskId).toHaveBeenCalledWith(123);
 
         expect(mockMoveTaskToDone).toHaveBeenCalledTimes(1);
         

@@ -1,11 +1,10 @@
 {
-    "type": "pull_request.merged",
+    "type": "pull_request.closed",
     "payload": {
       "action": "closed",
       "pull_request": {
         "id": 208,
-        "title": "#123 Open Login PR",
-        "merged": true
+        "title": "[#123] Open Login PR"
       },
       "repository": {
         "id": 1,

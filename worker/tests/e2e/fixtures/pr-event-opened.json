@@ -4,8 +4,7 @@
       "action": "opened",
       "pull_request": {
         "id": 208,
-        "title": "#123 Open Login PR",
-        "merged": false
+        "title": "[#123] Open Login PR"
       },
       "repository": {
         "id": 1,

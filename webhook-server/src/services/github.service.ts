@@ -86,7 +86,7 @@ const buildEvent = (
 
     if (webhookType === "push") {
         return {
-            type: GitHubEventType.PUSH_RECEIVED,
+            type: GitHubEventType.PUSH,
             payload: payload as GitHubPushPayload,
         };
     }
@@ -108,7 +108,7 @@ const buildEvent = (
         payload.action === "closed"
     ) {
         return {
-            type: GitHubEventType.PULL_REQUEST_MERGED,
+            type: GitHubEventType.PULL_REQUEST_CLOSED,
             payload: payload as GitHubPullRequestPayload,
         };
     }

@@ -13,7 +13,6 @@ import openRequestEvent from "./fixtures/pr-event-opened.json";
 
 import {
     mockCreateClickUpTask,
-    mockFindTaskById,
     mockMoveTaskToReview,
     mockMoveTaskToInProgress,
     mockMoveTaskToTesting,
@@ -24,6 +23,8 @@ import {
 import {
     mockIncrementCommitCount,
     mockResetCommitCount,
+    mockGetTaskId,
+    mockSaveTaskId,
 } from "../setup/mock-redis";
 
 
@@ -31,10 +32,8 @@ describe("GitLab to ClickUp Workflow E2E", () => {
 
     beforeEach(() => {
         resetClickUpMocks();
-        mockFindTaskById.mockResolvedValue({
-            id: "task-123",
-            name: "[#123] Test Task"
-        })
+        mockCreateClickUpTask.mockResolvedValue("task-123");
+        mockGetTaskId.mockResolvedValue("task-123");
     });
 
     it("should process the complete GitLab to ClickUp workflow", async () => {
@@ -42,11 +41,13 @@ describe("GitLab to ClickUp Workflow E2E", () => {
         // Issue Assigned -> Create Task
         await handleGitHubEvent(issueEvent as GitHubEvent);
         expect(mockCreateClickUpTask).toHaveBeenCalledTimes(1);
+        expect(mockSaveTaskId).toHaveBeenCalledWith(123, "task-123");
 
         //first commit -> review
         mockIncrementCommitCount.mockResolvedValueOnce(1);
         await handleGitHubEvent(pushEvent as GitHubEvent);
-        expect(mockMoveTaskToReview).toHaveBeenCalledTimes(1);
+        expect(mockGetTaskId).toHaveBeenCalledWith(123);
+        expect(mockMoveTaskToReview).toHaveBeenCalledWith("task-123");
 
         // Third Commit -> In Progress
         mockIncrementCommitCount.mockResolvedValueOnce(3);
@@ -61,7 +62,6 @@ describe("GitLab to ClickUp Workflow E2E", () => {
         await handleGitHubEvent(mergeRequestEvent as GitHubEvent);
         expect(mockMoveTaskToDone).toHaveBeenCalledWith("task-123");
         expect(mockResetCommitCount).toHaveBeenCalledWith(123);
-
     });
 
 });

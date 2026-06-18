@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll } from "@jest/globals";
+import { describe, it, expect, beforeAll, afterAll, beforeEach } from "@jest/globals";
 import { startConsumer } from "../../src/consumers/githubEventConsumer";
 import issueEvent from "./fixtures/issue-event.json";
 
@@ -23,11 +23,17 @@ describe("GitHub Event Consumer E2E", () => {
          * start RabbitMQ test infrastructure
          * launch the consumer before running tests
          */
-        jest.clearAllMocks();
         await setupRabbitMQ();
         await startConsumer();
 
     });
+
+    beforeEach(() => {
+        /**
+         * Ensure mock all counts are reset between tests
+         */
+        jest.clearAllMocks();
+    })
     
     /**
      * close RabbitMQ resources after all tests complete

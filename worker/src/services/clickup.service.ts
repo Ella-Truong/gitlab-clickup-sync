@@ -54,37 +54,6 @@ export async function createClickUpTask(
     return task.id;
 }
 
-/** 
- * Find a task by ID -> return a task
-*/
-export async function findTaskById(
-    issueId: number
-): Promise<ClickUpTask | null>{
-    const {
-        clickupApiUrl,
-        clickupToken,
-        clickupListId
-    } = getEnv();
-
-    const res = await fetch(
-        `${clickupApiUrl}/list/${clickupListId}/task`,
-        {
-            headers:{
-                Authorization: clickupToken
-            },
-        }
-    )
-
-    if (!res.ok){
-        throw new Error(`ClickUp API error: ${res.status}`)
-    }
-
-    const data = await res.json() as ClickUpTaskListResponse;
-
-    return (
-        data.tasks.find(task => task.name.startsWith(`[#${issueId}]`)) ?? null
-    );
-}
 
 /**
  * Internal helper function for status updates

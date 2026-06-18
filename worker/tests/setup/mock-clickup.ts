@@ -54,7 +54,6 @@ export const mockMoveTaskToReview = jest.fn();
 export const mockMoveTaskToInProgress = jest.fn();
 export const mockMoveTaskToTesting = jest.fn();
 export const mockMoveTaskToDone = jest.fn();
-export const mockFindTaskById = jest.fn<() => Promise<ClickUpTask | null>>();
 
 /**
  * Reset all mock call history before each test.
@@ -103,5 +102,4 @@ jest.mock("../../src/services/clickup.service", () => ({
     moveTaskToInProgress: mockMoveTaskToInProgress,
     moveTaskToTesting: mockMoveTaskToTesting,
     moveTaskToDone: mockMoveTaskToDone,
-    findTaskById: mockFindTaskById,
 }));

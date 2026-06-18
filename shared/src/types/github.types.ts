@@ -1,17 +1,22 @@
 /**
  * Defines TypeScript types for GitHub webhook payloads.
  */
+export interface GitHubUser {
+    login: string;
+}
+
+export interface GitHubRepository {
+    id: number;
+    name: string;
+}
 
 export interface GitHubIssue {
     id: number;
+    number: number;
     title: string;
     body: string;
     created_at: string;
-    assignees: [
-        {
-            login: string;
-        }
-    ]
+    assignees: GitHubUser[];
 }
 
 export interface GitHubCommit {
@@ -25,13 +30,8 @@ export interface GitHubPullRequest {
     body?: string | null;
 }
 
-export interface GitHubRepository {
-    id: number;
-    name: string;
-}
-
 export interface GitHubIssuePayload {
-    action: string;
+    action: "assigned";
     issue: GitHubIssue;
     repository: GitHubRepository;
 }
@@ -43,7 +43,7 @@ export interface GitHubPushPayload {
 }
 
 export interface GitHubPullRequestPayload {
-    action: string;
+    action: "opened" | "closed";
     pull_request: GitHubPullRequest;
     repository: GitHubRepository;
 }

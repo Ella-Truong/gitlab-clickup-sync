@@ -3,8 +3,9 @@
     "payload": {
       "action":"assigned",
       "issue":{
-        "id": 123,
-        "title": "[#123] Implement Login",
+        "id": 123456,
+        "number": 123,
+        "title":"Implement Login",
         "assignees":[{
           "login":"Ella"
          }],
