@@ -22,7 +22,9 @@ import {
     saveTaskId,
     getTaskId,
     resetCommitCount,
-    incrementCommitCount 
+    incrementCommitCount, 
+    getClickUpUserId,
+    deleteTaskId
 } from "../services/redis.service";
 
 import {extractIssueNumber} from "../../utils/extractIssueNumber";
@@ -75,22 +77,28 @@ async function handleIssueEvent(
     if(!("issue" in event.payload)){
         return;
     }
+    
+    const issue = event.payload.issue;
+    const issueNumber = issue.number;
 
-    const issueNumber = event.payload.issue.number;
+    const clickupUserIds = (
+        await Promise.all(
+            issue.assignees.map(
+                assignee => getClickUpUserId(assignee.login)
+            )
+        )
+    ).filter((id): id is number => id !== null)
 
     //use the service of creating task of ClickUp
-    const clickUpTaskWithIssueNumber = await createClickUpTask({
-        title: `[#${issueNumber}] ${event.payload.issue.title}`,
-        description: event.payload.issue.body,
-        createdAt: event.payload.issue.created_at,
-        assignees: event.payload.issue.assignees.map(
-            assignee => assignee.login
-        )
+    const taskId = await createClickUpTask({
+        title: `Task - [#${issueNumber}] ${issue.title}`,
+        description: issue.body ?? "",
+        createdAt: issue.created_at,
+        assignees: clickupUserIds,
     });  
 
-    await saveTaskId(issueNumber, clickUpTaskWithIssueNumber);
+    await saveTaskId(issueNumber, taskId);
 }
-
 
 
 /**
@@ -164,7 +172,6 @@ async function handlePullRequestEvent (
    const taskId = await getTaskId(issueNumber);
    if (!taskId) return;
 
-
    switch (event.payload.action){
     case "opened":
         await moveTaskToTesting(taskId);
@@ -176,6 +183,7 @@ async function handlePullRequestEvent (
 
         await moveTaskToDone(taskId);
         await resetCommitCount(issueNumber);
+        await deleteTaskId
         break;
    }
 }

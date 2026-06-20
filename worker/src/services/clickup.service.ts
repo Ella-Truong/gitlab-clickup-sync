@@ -79,7 +79,8 @@ export async function createClickUpTask(
             body: JSON.stringify({
                 name: input.title,
                 markdown_content: input.description,
-                status: input.assignees,
+                status: "To Do",
+                assignees: input.assignees,
             }), 
         }
     );

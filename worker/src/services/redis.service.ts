@@ -92,3 +92,15 @@ export async function resetCommitCount(
         `github:issue:${issueNumber}:commits`
     );
 }
+
+
+/**
+ * Delete task ID
+ */
+export async function deleteTaskId(
+    issueNumber: number
+): Promise<void>{
+    await redis.del(
+        `github:issue:${issueNumber}:task-id`
+    );
+}
