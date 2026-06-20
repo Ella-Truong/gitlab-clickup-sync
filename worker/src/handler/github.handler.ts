@@ -25,7 +25,7 @@ import {
     incrementCommitCount 
 } from "../services/redis.service";
 
-import {extractIssueId} from "../../utils/extractIssueId";
+import {extractIssueNumber} from "../../utils/extractIssueNumber";
 
 
 
@@ -40,20 +40,16 @@ import {extractIssueId} from "../../utils/extractIssueId";
  */
 export async function handleGitHubEvent(event: GitHubEvent): Promise<void>{
     switch (event.type) {
-        case GitHubEventType.ISSUE_ASSIGNED:
-            await handleIssueAssigned(event);
+        case GitHubEventType.ISSUE:
+            await handleIssueEvent(event);
             break;
         
         case GitHubEventType.PUSH:
-            await handlePushReceived(event);
+            await handlePushEvent(event);
             break;
 
-        case GitHubEventType.PULL_REQUEST_OPENED:
-            await handlePullRequestOpened(event);
-            break;
-
-        case GitHubEventType.PULL_REQUEST_CLOSED:
-            await handlePullRequestClosed(event);
+        case GitHubEventType.PULL_REQUEST:
+            await handlePullRequestEvent(event);
             break;
 
         default:
@@ -61,7 +57,6 @@ export async function handleGitHubEvent(event: GitHubEvent): Promise<void>{
 
     }
 }
-
 
 
 /**
@@ -74,7 +69,7 @@ export async function handleGitHubEvent(event: GitHubEvent): Promise<void>{
  *
  * Uses the ClickUp service to create the task.
  */
-async function handleIssueAssigned(
+async function handleIssueEvent(
     event: GitHubEvent
 ): Promise<void>{
     if(!("issue" in event.payload)){
@@ -112,30 +107,34 @@ async function handleIssueAssigned(
  *
  * Commit counts are tracked in Redis.
  */
-async function handlePushReceived(
+async function handlePushEvent(
     event: GitHubEvent
 ): Promise<void>{
     if(!("commits" in event.payload)){
         return;
     }
     
-    for (const commit of event.payload.commits){
-        const issueNumber = extractIssueId(commit.message);  //return ID task (number)
-        if (!issueNumber) continue;
-
-        const taskId = await getTaskId(issueNumber);   //use returned ID to find that task (ClickUpTask type)
-        if (!taskId) continue;
-
-        //use Redis services
-        const commitCount = await incrementCommitCount(issueNumber);
-        if (commitCount === 1) {
-            await moveTaskToReview(taskId);
-        }
-        if(commitCount === 3){
-            await moveTaskToInProgress(taskId);
-        }
+    //ignore merge pushes to main
+    if (event.payload.ref === "refs/heads/main"){
+        return;
     }
-    
+
+    //refs/heads/feature/5-implement-login
+    const issueNumber = extractIssueNumber(event.payload.ref);
+    if(!issueNumber) return;
+
+    const taskId = await getTaskId(issueNumber);
+    if(!taskId) return;
+
+    const commitCount = await incrementCommitCount(issueNumber);
+    if(commitCount === 1){
+        await moveTaskToReview(taskId);
+    }
+
+    if(commitCount === 3) 
+    {
+        await moveTaskToInProgress(taskId);
+    }    
 }
 
 
@@ -152,36 +151,31 @@ async function handlePushReceived(
  * When a pull request is merged, the Redis commit counter
  * is cleared because the development workflow is complete.
  */
-async function handlePullRequestOpened (
+async function handlePullRequestEvent (
     event: GitHubEvent,
 ): Promise<void>{
    if (!("pull_request" in event.payload)){
     return;
    }
 
-   const issueNumber = extractIssueId(event.payload.pull_request.title);
-   if(!issueNumber) return;
+   const issueNumber = extractIssueNumber(event.payload.pull_request.head.ref);
+   if (!issueNumber) return;
 
    const taskId = await getTaskId(issueNumber);
    if (!taskId) return;
 
-   await moveTaskToTesting(taskId);
 
-}
+   switch (event.payload.action){
+    case "opened":
+        await moveTaskToTesting(taskId);
+        break;
+    case "closed":
+        if(!event.payload.pull_request.merged){
+            return;
+        }
 
-async function handlePullRequestClosed (
-    event: GitHubEvent,
-): Promise<void>{
-    if(!("pull_request" in event.payload)){
-        return;
-    }
-
-    const issueNumber = extractIssueId(event.payload.pull_request.title)
-    if(!issueNumber) return;
-
-    const taskId = await getTaskId(issueNumber);
-    if(!taskId) return;
-
-    await moveTaskToDone(taskId);
-    await resetCommitCount(issueNumber);
+        await moveTaskToDone(taskId);
+        await resetCommitCount(issueNumber);
+        break;
+   }
 }

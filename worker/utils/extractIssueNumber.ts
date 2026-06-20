@@ -6,7 +6,7 @@
  * Fix bug for #456 --> 456
  */
 
-export function extractIssueId(
+export function extractIssueNumber(
     text: string
 ): number | null {
     const match = text.match(/#(\d+)/);

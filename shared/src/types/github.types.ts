@@ -12,7 +12,7 @@ export interface GitHubRepository {
 
 export interface GitHubIssue {
     id: number;
-    number: number;
+    number: number;    //source of truth
     title: string;
     body: string;
     created_at: string;
@@ -26,18 +26,24 @@ export interface GitHubCommit {
 
 export interface GitHubPullRequest {
     id: number;
+    number: number;  //PR number, NOT source of truth
     title: string;
+    head: {
+        ref: string;
+    };
     body?: string | null;
+    merged: boolean;
 }
 
 export interface GitHubIssuePayload {
-    action: "assigned";
+    action: "assigned" | "opened";
     issue: GitHubIssue;
     repository: GitHubRepository;
 }
 
 export interface GitHubPushPayload {
-    ref: string;
+    ref: string;      //refs/heads/feature/<issue number>-<something> for commit push or refs/head/main for last push before open a PR
+    created: boolean;
     commits: GitHubCommit[];
     repository: GitHubRepository;
 }
