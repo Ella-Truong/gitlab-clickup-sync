@@ -18,3 +18,8 @@ export interface ClickUpTaskInput {
     assignees: string[];
     createdAt: string;
 }
+
+export interface ClickUpUser {
+    id: number;
+    username: string;
+}

@@ -1,6 +1,36 @@
 import { redis } from "../config/redis";
 
 /**
+ * Mapping: Github login --> ClickUp user ID
+ */
+export async function saveUserMapping(
+    login: string,
+    clickUpUserId: number
+): Promise<void>{
+    await redis.hset(
+        "github:users",
+        login,
+        clickUpUserId.toString()
+    );
+}
+
+
+/**
+ * Get ClickUp user ID from Gitub login
+ */
+export async function getClickUpUserId(
+    login: string,
+): Promise<number | null>{
+    const clickupUserId = await redis.hget(
+        "github:users",
+        login
+    )
+
+    return clickupUserId? Number(clickupUserId) : null;
+}
+
+
+/**
  * Store GitHub issue number -> ClickUp task ID
  */
 export async function saveTaskId(
@@ -12,6 +42,7 @@ export async function saveTaskId(
         taskId
     );
 }
+
 
 /**
  * Retrieve ClickUp task ID by GitHub issue number
@@ -30,13 +61,14 @@ export async function getTaskId(
 export async function incrementCommitCount(
     issueNumber: number,
 ): Promise<number>{
-    return redis.incr(
+    return await redis.incr(
         `github:issue:${issueNumber}:commits`,
     )
 }
 
+
 /**
- * get current commit count
+ * Get current commit count
  */
 export async function getCommitCount(
     issueNumber: number,
@@ -48,8 +80,9 @@ export async function getCommitCount(
     return Number(value ?? 0)
 }
 
+
 /**
- * reset commit count
+ * Reset commit count after PR merged
  */
 
 export async function resetCommitCount(
