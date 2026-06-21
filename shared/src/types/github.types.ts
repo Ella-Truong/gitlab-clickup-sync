@@ -25,6 +25,8 @@ export interface GitHubCommit {
 }
 
 export interface GitHubPullRequest {
+    id: number;
+    title: string;
     head: {
         ref: string;
     };
