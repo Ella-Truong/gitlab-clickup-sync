@@ -54,7 +54,9 @@ export async function getWorkspaceUsers() : Promise<ClickUpUser[]> {
 }
 
 
-/*Create a new ClickUp task when a GitLab issue is assigned*/
+/**
+ * Create a new ClickUp task when a GitLab issue is assigned
+ */
 export async function createClickUpTask(
     input: ClickUpTaskInput
 ): Promise<string>{

@@ -68,6 +68,7 @@ const validatePayload = (
 
 /**
  * Build a strongly typed business event
+ * Return GitHubEvent
  */
 const buildEvent = (
     webhookType: string,
@@ -76,10 +77,10 @@ const buildEvent = (
     if (
         webhookType === "issues" &&
         "action" in payload &&
-        payload.action === "assigned"
+        payload.action === "assigned" || "opened"
     ) {
         return {
-            type: GitHubEventType.ISSUE_ASSIGNED,
+            type: GitHubEventType.ISSUE,
             payload: payload as GitHubIssuePayload,
         };
     }
@@ -94,21 +95,10 @@ const buildEvent = (
     if (
         webhookType === "pull_request" &&
         "action" in payload &&
-        payload.action === "opened"
+        payload.action === "opened" || "closed"
     ) {
         return {
-            type: GitHubEventType.PULL_REQUEST_OPENED,
-            payload: payload as GitHubPullRequestPayload,
-        };
-    }
-
-    if (
-        webhookType === "pull_request" &&
-        "action" in payload &&
-        payload.action === "closed"
-    ) {
-        return {
-            type: GitHubEventType.PULL_REQUEST_CLOSED,
+            type: GitHubEventType.PULL_REQUEST,
             payload: payload as GitHubPullRequestPayload,
         };
     }

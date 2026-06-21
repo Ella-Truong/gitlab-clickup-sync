@@ -21,12 +21,12 @@ export async function saveUserMapping(
 export async function getClickUpUserId(
     login: string,
 ): Promise<number | null>{
-    const clickupUserId = await redis.hget(
+    const clickUpUserId = await redis.hget(
         "github:users",
         login
     )
 
-    return clickupUserId? Number(clickupUserId) : null;
+    return clickUpUserId? Number(clickUpUserId) : null;
 }
 
 

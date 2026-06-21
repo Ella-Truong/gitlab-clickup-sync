@@ -25,9 +25,6 @@ export interface GitHubCommit {
 }
 
 export interface GitHubPullRequest {
-    id: number;
-    number: number;  //PR number, NOT source of truth
-    title: string;
     head: {
         ref: string;
     };

@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, jest } from "@jest/globals";
 import "../setup/mock-clickup";
+
 import unsupportedEvent from "./fixtures/unsupported-event.json";
 import { handleGitHubEvent } from "../../src/handler/github.handler";
 

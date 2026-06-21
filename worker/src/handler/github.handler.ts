@@ -55,8 +55,7 @@ export async function handleGitHubEvent(event: GitHubEvent): Promise<void>{
             break;
 
         default:
-            console.warn(`Unsupported evetn type: ${event.type}`)
-
+            console.warn(`Unsupported event type: ${event.type}`)
     }
 }
 
@@ -81,7 +80,7 @@ async function handleIssueEvent(
     const issue = event.payload.issue;
     const issueNumber = issue.number;
 
-    const clickupUserIds = (
+    const clickUpUserIds = (
         await Promise.all(
             issue.assignees.map(
                 assignee => getClickUpUserId(assignee.login)
@@ -89,14 +88,15 @@ async function handleIssueEvent(
         )
     ).filter((id): id is number => id !== null)
 
-    //use the service of creating task of ClickUp
+    //use one service of ClickUp - createClickUpTask()
     const taskId = await createClickUpTask({
-        title: `Task - [#${issueNumber}] ${issue.title}`,
+        title: `Task [${issueNumber}] - ${issue.title}`,
         description: issue.body ?? "",
         createdAt: issue.created_at,
-        assignees: clickupUserIds,
+        assignees: clickUpUserIds,
     });  
-
+    
+    //use Redis service 
     await saveTaskId(issueNumber, taskId);
 }
 
@@ -135,6 +135,7 @@ async function handlePushEvent(
     if(!taskId) return;
 
     const commitCount = await incrementCommitCount(issueNumber);
+
     if(commitCount === 1){
         await moveTaskToReview(taskId);
     }
@@ -165,8 +166,10 @@ async function handlePullRequestEvent (
    if (!("pull_request" in event.payload)){
     return;
    }
+   
+   const pull_request = event.payload.pull_request;
 
-   const issueNumber = extractIssueNumber(event.payload.pull_request.head.ref);
+   const issueNumber = extractIssueNumber(pull_request.head.ref);
    if (!issueNumber) return;
 
    const taskId = await getTaskId(issueNumber);
@@ -177,7 +180,7 @@ async function handlePullRequestEvent (
         await moveTaskToTesting(taskId);
         break;
     case "closed":
-        if(!event.payload.pull_request.merged){
+        if(!pull_request.merged){
             return;
         }
 

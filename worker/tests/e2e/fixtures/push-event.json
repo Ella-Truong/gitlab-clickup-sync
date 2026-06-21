@@ -1,7 +1,7 @@
 {
   "type": "push",
   "payload": {
-    "ref": "refs/heads/main",
+    "ref": "refs/heads/feature/123-implement-login",
     "commits": [
       {
         "id": "abc123",
