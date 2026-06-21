@@ -10,6 +10,7 @@ import issueEvent from "./fixtures/issue-event.json";
 import pushEvent from "./fixtures/push-event.json";
 import mergeRequestEvent from "./fixtures/pr-event-merged.json";
 import openRequestEvent from "./fixtures/pr-event-opened.json";
+import unsupportedRequestEvent from "./fixtures/unsupported-event.json";
 
 import {
     mockCreateClickUpTask,
@@ -25,21 +26,27 @@ import {
     mockResetCommitCount,
     mockGetTaskId,
     mockSaveTaskId,
+    mockGetClickUpUserId,
+    resetRedisMocks,
 } from "../setup/mock-redis";
 
 
-describe("GitLab to ClickUp Workflow E2E", () => {
+describe("GitHub to ClickUp Workflow E2E", () => {
 
     beforeEach(() => {
+        resetRedisMocks();
         resetClickUpMocks();
+
         mockCreateClickUpTask.mockResolvedValue("task-123");
+        mockGetClickUpUserId.mockResolvedValue(87654321);
         mockGetTaskId.mockResolvedValue("task-123");
     });
 
-    it("should process the complete GitLab to ClickUp workflow", async () => {
+    it("should process the complete GitHub to ClickUp workflow", async () => {
 
         // Issue Assigned -> Create Task
         await handleGitHubEvent(issueEvent as GitHubEvent);
+        expect(mockGetClickUpUserId).toHaveBeenCalledWith("Ella-Truong")
         expect(mockCreateClickUpTask).toHaveBeenCalledTimes(1);
         expect(mockSaveTaskId).toHaveBeenCalledWith(123, "task-123");
 
@@ -63,5 +70,17 @@ describe("GitLab to ClickUp Workflow E2E", () => {
         expect(mockMoveTaskToDone).toHaveBeenCalledWith("task-123");
         expect(mockResetCommitCount).toHaveBeenCalledWith(123);
     });
+
+    it("should ignore unsupported events", async () => {
+        await handleGitHubEvent(
+            unsupportedRequestEvent as GitHubEvent
+        )
+
+        expect(mockCreateClickUpTask).not.toHaveBeenCalled();
+        expect(mockMoveTaskToReview).not.toHaveBeenCalled();
+        expect(mockMoveTaskToInProgress).not.toHaveBeenCalled();
+        expect(mockMoveTaskToTesting).not.toHaveBeenCalled();
+        expect(mockMoveTaskToDone).not.toHaveBeenCalled();
+    })
 
 });

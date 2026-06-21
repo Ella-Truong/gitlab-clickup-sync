@@ -22,10 +22,12 @@ import {
     saveTaskId,
     getTaskId,
     resetCommitCount,
-    incrementCommitCount 
+    incrementCommitCount, 
+    getClickUpUserId,
+    deleteTaskId
 } from "../services/redis.service";
 
-import {extractIssueId} from "../../utils/extractIssueId";
+import {extractIssueNumber} from "../../utils/extractIssueNumber";
 
 
 
@@ -40,28 +42,22 @@ import {extractIssueId} from "../../utils/extractIssueId";
  */
 export async function handleGitHubEvent(event: GitHubEvent): Promise<void>{
     switch (event.type) {
-        case GitHubEventType.ISSUE_ASSIGNED:
-            await handleIssueAssigned(event);
+        case GitHubEventType.ISSUE:
+            await handleIssueEvent(event);
             break;
         
         case GitHubEventType.PUSH:
-            await handlePushReceived(event);
+            await handlePushEvent(event);
             break;
 
-        case GitHubEventType.PULL_REQUEST_OPENED:
-            await handlePullRequestOpened(event);
-            break;
-
-        case GitHubEventType.PULL_REQUEST_CLOSED:
-            await handlePullRequestClosed(event);
+        case GitHubEventType.PULL_REQUEST:
+            await handlePullRequestEvent(event);
             break;
 
         default:
-            console.warn(`Unsupported evetn type: ${event.type}`)
-
+            console.warn(`Unsupported event type: ${event.type}`)
     }
 }
-
 
 
 /**
@@ -74,28 +70,35 @@ export async function handleGitHubEvent(event: GitHubEvent): Promise<void>{
  *
  * Uses the ClickUp service to create the task.
  */
-async function handleIssueAssigned(
+async function handleIssueEvent(
     event: GitHubEvent
 ): Promise<void>{
     if(!("issue" in event.payload)){
         return;
     }
+    
+    const issue = event.payload.issue;
+    const issueNumber = issue.number;
 
-    const issueNumber = event.payload.issue.number;
-
-    //use the service of creating task of ClickUp
-    const clickUpTaskWithIssueNumber = await createClickUpTask({
-        title: `[#${issueNumber}] ${event.payload.issue.title}`,
-        description: event.payload.issue.body,
-        createdAt: event.payload.issue.created_at,
-        assignees: event.payload.issue.assignees.map(
-            assignee => assignee.login
+    const clickUpUserIds = (
+        await Promise.all(
+            issue.assignees.map(
+                assignee => getClickUpUserId(assignee.login)
+            )
         )
+    ).filter((id): id is number => id !== null)
+
+    //use one service of ClickUp - createClickUpTask()
+    const taskId = await createClickUpTask({
+        title: `Task [${issueNumber}] - ${issue.title}`,
+        description: issue.body ?? "",
+        createdAt: issue.created_at,
+        assignees: clickUpUserIds,
     });  
-
-    await saveTaskId(issueNumber, clickUpTaskWithIssueNumber);
+    
+    //use Redis service 
+    await saveTaskId(issueNumber, taskId);
 }
-
 
 
 /**
@@ -112,30 +115,35 @@ async function handleIssueAssigned(
  *
  * Commit counts are tracked in Redis.
  */
-async function handlePushReceived(
+async function handlePushEvent(
     event: GitHubEvent
 ): Promise<void>{
     if(!("commits" in event.payload)){
         return;
     }
     
-    for (const commit of event.payload.commits){
-        const issueNumber = extractIssueId(commit.message);  //return ID task (number)
-        if (!issueNumber) continue;
-
-        const taskId = await getTaskId(issueNumber);   //use returned ID to find that task (ClickUpTask type)
-        if (!taskId) continue;
-
-        //use Redis services
-        const commitCount = await incrementCommitCount(issueNumber);
-        if (commitCount === 1) {
-            await moveTaskToReview(taskId);
-        }
-        if(commitCount === 3){
-            await moveTaskToInProgress(taskId);
-        }
+    //ignore merge pushes to main
+    if (event.payload.ref === "refs/heads/main"){
+        return;
     }
-    
+
+    //refs/heads/feature/5-implement-login
+    const issueNumber = extractIssueNumber(event.payload.ref);
+    if(!issueNumber) return;
+
+    const taskId = await getTaskId(issueNumber);
+    if(!taskId) return;
+
+    const commitCount = await incrementCommitCount(issueNumber);
+
+    if(commitCount === 1){
+        await moveTaskToReview(taskId);
+    }
+
+    if(commitCount === 3) 
+    {
+        await moveTaskToInProgress(taskId);
+    }    
 }
 
 
@@ -152,36 +160,33 @@ async function handlePushReceived(
  * When a pull request is merged, the Redis commit counter
  * is cleared because the development workflow is complete.
  */
-async function handlePullRequestOpened (
+async function handlePullRequestEvent (
     event: GitHubEvent,
 ): Promise<void>{
    if (!("pull_request" in event.payload)){
     return;
    }
+   
+   const pull_request = event.payload.pull_request;
 
-   const issueNumber = extractIssueId(event.payload.pull_request.title);
-   if(!issueNumber) return;
+   const issueNumber = extractIssueNumber(pull_request.head.ref);
+   if (!issueNumber) return;
 
    const taskId = await getTaskId(issueNumber);
    if (!taskId) return;
 
-   await moveTaskToTesting(taskId);
+   switch (event.payload.action){
+    case "opened":
+        await moveTaskToTesting(taskId);
+        break;
+    case "closed":
+        if(!pull_request.merged){
+            return;
+        }
 
-}
-
-async function handlePullRequestClosed (
-    event: GitHubEvent,
-): Promise<void>{
-    if(!("pull_request" in event.payload)){
-        return;
-    }
-
-    const issueNumber = extractIssueId(event.payload.pull_request.title)
-    if(!issueNumber) return;
-
-    const taskId = await getTaskId(issueNumber);
-    if(!taskId) return;
-
-    await moveTaskToDone(taskId);
-    await resetCommitCount(issueNumber);
+        await moveTaskToDone(taskId);
+        await resetCommitCount(issueNumber);
+        await deleteTaskId
+        break;
+   }
 }

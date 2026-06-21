@@ -8,12 +8,55 @@ import {
     ClickUpTask, 
     ClickUpTaskListResponse,
     ClickUpTaskInput,
+    ClickUpUser,
 } from "../../../shared/src/types/clickup.types";
 
 
 /**---------------- Services --------------- */
 
-/*Create a new ClickUp task when a GitLab issue is assigned*/
+/**
+ * Fetch all users from a ClickUp workspace
+ * Used during worker startup to build
+ * GitHub username --> ClickUp user ID mappings
+ */
+export async function getWorkspaceUsers() : Promise<ClickUpUser[]> {
+    const {clickupApiUrl, clickupToken, clickupTeamId} = getEnv();
+    
+    const res = await fetch(
+        `${clickupApiUrl}/team`, 
+        {
+            headers: {
+                Authorization: clickupToken
+            },
+        }
+    );
+
+    if (!res.ok) {
+        throw new Error(`ClickUp API Error: ${res.status}`)
+    }
+
+    const data = await res.json();
+
+    const workspace = data.teams.find(
+        (team:any) => team.id === clickupTeamId
+    );
+
+    if(!workspace) {
+        throw new Error(`Workspace ${clickupTeamId} not found`)
+    }
+
+    return workspace.members.map(
+        (member:any): ClickUpUser => ({
+            id: member.user.id,
+            username: member.user.username,
+        })
+    )
+}
+
+
+/**
+ * Create a new ClickUp task when a GitLab issue is assigned
+ */
 export async function createClickUpTask(
     input: ClickUpTaskInput
 ): Promise<string>{
@@ -38,7 +81,8 @@ export async function createClickUpTask(
             body: JSON.stringify({
                 name: input.title,
                 markdown_content: input.description,
-                status: "In Progress",
+                status: "To Do",
+                assignees: input.assignees,
             }), 
         }
     );
@@ -72,13 +116,13 @@ async function updateTaskStatus(
                 Authorization: clickupToken,
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(
+            body: JSON.stringify({
                 status,
-            )
+            }),
         }
     )
     if(!res.ok) {
-        throw new Error(`ClickUp API error: , ${res.status}`);
+        throw new Error(`ClickUp API error: ${res.status}`);
     }
 }
 

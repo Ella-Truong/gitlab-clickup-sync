@@ -1,10 +1,12 @@
 {
-    "type": "pull_request.opened",
+    "type": "pull_request",
     "payload": {
       "action": "opened",
       "pull_request": {
-        "id": 208,
-        "title": "[#123] Open Login PR"
+        "head": {
+          "ref":"feature/123-implement-login"
+        },
+        "merged": false
       },
       "repository": {
         "id": 1,
