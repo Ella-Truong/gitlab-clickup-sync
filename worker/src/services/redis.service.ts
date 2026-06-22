@@ -1,4 +1,5 @@
 import { redis } from "../config/redis";
+import {normalizeUsername} from "../../utils/normalizeUsername"
 
 /**
  * Mapping: Github login --> ClickUp user ID
@@ -9,10 +10,7 @@ export async function saveUserMapping(
 ): Promise<void>{
     await redis.hset(
         "github:users",
-        login
-           .toLowerCase()
-           .replace(/-/g, " ")
-           .trim(),
+        normalizeUsername(login),
         clickUpUserId.toString()
     );
 }
@@ -26,10 +24,7 @@ export async function getClickUpUserId(
 ): Promise<number | null>{
     const clickUpUserId = await redis.hget(
         "github:users",
-        login
-           .toLowerCase()
-           .replace(/-/g," ")
-           .trim()
+        normalizeUsername(login)
     )
 
     return clickUpUserId? Number(clickUpUserId) : null;
