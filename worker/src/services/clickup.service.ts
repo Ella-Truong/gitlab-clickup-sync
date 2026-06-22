@@ -5,8 +5,7 @@
  */
 import { getEnv } from "../config/env";
 import { 
-    ClickUpTask, 
-    ClickUpTaskListResponse,
+    ClickUpTask,
     ClickUpTaskInput,
     ClickUpUser,
 } from "../../../shared/src/types/clickup.types";
@@ -21,7 +20,6 @@ import {
  */
 export async function getWorkspaceUsers() : Promise<ClickUpUser[]> {
     const {clickupApiUrl, clickupToken, clickupTeamId} = getEnv();
-    console.log("CLICKUP_TEAM_ID:", process.env.CLICKUP_TEAM_ID);
     const res = await fetch(
         `${clickupApiUrl}/team`, 
         {

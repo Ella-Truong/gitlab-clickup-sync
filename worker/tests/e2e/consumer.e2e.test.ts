@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "@jest/globals";
 import { startConsumer } from "../../src/consumers/githubEventConsumer";
 import issueEvent from "./fixtures/issue-event.json";
-
+import { jest } from "@jest/globals";
 import {
     setupRabbitMQ,
     publishMessage,
