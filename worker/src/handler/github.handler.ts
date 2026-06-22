@@ -6,8 +6,11 @@
 */
 
 import { 
+    GitHubEvent,
     GitHubEventType,
-    GitHubEvent 
+    GitHubIssueEvent,
+    GitHubPushEvent,
+    GitHubPullRequestEvent
 } from "../../../shared/src/types/event.types";
 
 import {
@@ -71,7 +74,7 @@ export async function handleGitHubEvent(event: GitHubEvent): Promise<void>{
  * Uses the ClickUp service to create the task.
  */
 async function handleIssueEvent(
-    event: GitHubEvent
+    event: GitHubIssueEvent
 ): Promise<void>{
     if(!("issue" in event.payload)){
         return;
@@ -116,7 +119,7 @@ async function handleIssueEvent(
  * Commit counts are tracked in Redis.
  */
 async function handlePushEvent(
-    event: GitHubEvent
+    event: GitHubPushEvent
 ): Promise<void>{
     if(!("commits" in event.payload)){
         return;
@@ -161,7 +164,7 @@ async function handlePushEvent(
  * is cleared because the development workflow is complete.
  */
 async function handlePullRequestEvent (
-    event: GitHubEvent,
+    event: GitHubPullRequestEvent,
 ): Promise<void>{
    if (!("pull_request" in event.payload)){
     return;
