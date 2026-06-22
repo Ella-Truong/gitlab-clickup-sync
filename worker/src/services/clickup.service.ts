@@ -21,7 +21,7 @@ import {
  */
 export async function getWorkspaceUsers() : Promise<ClickUpUser[]> {
     const {clickupApiUrl, clickupToken, clickupTeamId} = getEnv();
-    
+    console.log("CLICKUP_TEAM_ID:", process.env.CLICKUP_TEAM_ID);
     const res = await fetch(
         `${clickupApiUrl}/team`, 
         {
@@ -36,7 +36,6 @@ export async function getWorkspaceUsers() : Promise<ClickUpUser[]> {
     }
 
     const data = await res.json();
-    console.log(data.teams);
 
     const workspace = data.teams.find(
         (team:any) => team.id === String(clickupTeamId)
