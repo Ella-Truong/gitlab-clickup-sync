@@ -77,7 +77,10 @@ const buildEvent = (
     if (
         webhookType === "issues" &&
         "action" in payload &&
-        payload.action === "assigned" || "opened"
+        (
+            payload.action === "assigned" || 
+            payload.action === "opened"
+        )
     ) {
         return {
             type: GitHubEventType.ISSUE,
@@ -95,7 +98,10 @@ const buildEvent = (
     if (
         webhookType === "pull_request" &&
         "action" in payload &&
-        payload.action === "opened" || "closed"
+        (
+            payload.action === "opened" ||
+            payload.action === "closed"
+        )
     ) {
         return {
             type: GitHubEventType.PULL_REQUEST,
