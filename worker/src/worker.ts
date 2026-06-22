@@ -21,6 +21,7 @@ app.listen(PORT, () => {
 
 async function bootstrap(): Promise<void>{
     const users = await getWorkspaceUsers();
+    console.log(users)
 
     for (const user of users){
         await saveUserMapping(user.username, user.id);

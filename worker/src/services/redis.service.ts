@@ -9,7 +9,10 @@ export async function saveUserMapping(
 ): Promise<void>{
     await redis.hset(
         "github:users",
-        login,
+        login
+           .toLowerCase()
+           .replace(/-/g, " ")
+           .trim(),
         clickUpUserId.toString()
     );
 }
@@ -24,6 +27,9 @@ export async function getClickUpUserId(
     const clickUpUserId = await redis.hget(
         "github:users",
         login
+           .toLowerCase()
+           .replace(/-/g," ")
+           .trim()
     )
 
     return clickUpUserId? Number(clickUpUserId) : null;
