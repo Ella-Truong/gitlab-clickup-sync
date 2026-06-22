@@ -36,6 +36,7 @@ export async function getWorkspaceUsers() : Promise<ClickUpUser[]> {
     }
 
     const data = await res.json();
+    console.log(data.teams);
 
     const workspace = data.teams.find(
         (team:any) => team.id === String(clickupTeamId)
