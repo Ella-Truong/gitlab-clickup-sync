@@ -55,7 +55,7 @@ export async function handleGitHubEvent(event: GitHubEvent): Promise<void>{
             break;
 
         default:
-            console.warn(`Unsupported event type: ${event.type}`)
+            console.warn(`Unsupported event type: ${event}`)
     }
 }
 
@@ -186,7 +186,6 @@ async function handlePullRequestEvent (
 
         await moveTaskToDone(taskId);
         await resetCommitCount(issueNumber);
-        await deleteTaskId
         break;
    }
 }
