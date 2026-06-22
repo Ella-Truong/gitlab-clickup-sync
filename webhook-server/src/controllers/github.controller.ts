@@ -22,7 +22,6 @@ export const handleGitHubWebhook = async (
         }
 
         await processWebhook(req.body, webhookType);
-        console.log(webhookType);
 
         return res.status(200).json({
             success: true,

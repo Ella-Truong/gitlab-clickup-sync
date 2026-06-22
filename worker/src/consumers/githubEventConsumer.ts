@@ -42,7 +42,6 @@ export async function startConsumer(){
             
             //extract data (msg.content) from the message -> payload
             const payload = JSON.parse(msg.content.toString());
-            console.log(msg?.content.toString());
 
             console.log(`Received ${payload.type} event from ${payload.payload.repository.name}`)
 
